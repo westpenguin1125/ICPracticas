@@ -1,97 +1,123 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <algorithm>
+#include <string>
 
 using namespace std;
 
-pair<int, int> pedirDimensiones(){
+class celda {
+public:
+    char letra = ' ';
+    bool paso = true;
+};
+
+pair<int, int> pedirDimensiones() {
     int filas, columnas;
-    
-    do {
-        cout << "Inserta el numero de filas:" << endl;
-        cin >> filas;
-    } while (filas < 0);
 
     do {
-        cout << "Inserta el numero de columnas:" << endl;
+        cout << "Inserta el numero de filas (mayor que 0):" << endl;
+        cin >> filas;
+    } while (filas <= 0);
+
+    do {
+        cout << "Inserta el numero de columnas (mayor que 0):" << endl;
         cin >> columnas;
-    } while (columnas < 0);
+    } while (columnas <= 0);
 
     return make_pair(filas, columnas);
 }
 
-pair<int, int> pedirCoordenadasIni(int filas, int columnas){
+pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas) {
     int x, y;
 
-    cout << "Para el punto inicial:" << endl;
+    cout << "Para " << tipo << ":" << endl;
     do {
-        cout << "Inserta la coordenada x:" << endl;
+        cout << "Inserta la coordenada x (entre 1 y " << filas << "):" << endl;
         cin >> x;
-    } while (x >= filas || x < 0);
-    
-    do {
-        cout << "Inserta la coordenada y:" << endl;
-        cin >> y;
-    } while (y >= columnas || y < 0);
+    } while (x < 1 || x > filas);
 
-    return make_pair(x, y);
+    do {
+        cout << "Inserta la coordenada y (entre 1 y " << columnas << "):" << endl;
+        cin >> y;
+    } while (y < 1 || y > columnas);
+
+    cout << endl;
+    return make_pair(y-1, x-1);
 }
 
-pair<int, int> pedirCoordenadasFin(int filas, int columnas){
-    int x, y;
+void printMatrix(vector<vector<celda>> matrix) {
+    cout << endl;
+    // Imprimir la esquina superior izquierda
+    cout << "  +";
 
-    cout << "Para el punto inicial:" << endl;
-    do {
-        cout << "Inserta la coordenada x:" << endl;
-        cin >> x;
-    } while (x >= filas || x < 0);
-    
-    do {
-        cout << "Inserta la coordenada y:" << endl;
-        cin >> y;
-    } while (y >= columnas || y < 0);
+    // Imprimir la línea superior de la matriz con esquinas
+    for (int j = 0; j < matrix[0].size(); j++) {
+        cout << "---+";
+    }
+    cout << endl;
 
-    return make_pair(x, y);
-}
+    for (int i = 0; i < matrix.size(); i++) {
+        // Contenido
+        cout << matrix.size() - i << " |";
+        for (int j = 0; j < matrix[i].size(); j++) {
+            cout << " " << matrix[i][j].letra << " ";
+            cout << "|";
+        }
+        cout << endl;
 
-void printMatrix(vector<vector<char>> matrix){
-    for (int i = 0; i < matrix.size(); i++){
-        for (int j = 0; j < matrix[i].size(); j++){
-            cout << matrix[i][j] << " ";
+        // Imprimir la línea inferior de cada fila con esquinas
+        cout << "  +";
+        for (int j = 0; j < matrix[i].size(); j++) {
+            cout << "---+";
         }
         cout << endl;
     }
-}
 
-void rellenarMatrix(vector<vector<char>> &matrix, pair<int, int> coordenadasIni, pair<int, int> coordenadasFin){
-    for (int i = 0; i < matrix.size(); i++){
-        for (int j = 0; j < matrix[i].size(); j++){
-            if (i == matrix.size() - 1 - coordenadasIni.first && j == coordenadasIni.second) {
-                matrix[i][j] = 'o';
-            } else if (i == matrix.size() - 1 - coordenadasFin.first && j == coordenadasFin.second) {
-                matrix[i][j] = 'f';
-            } else {
-                matrix[i][j] = '-';
-            }
-        }
+    // Imprimir los índices de las columnas
+    cout << "    ";
+    for (int i = 0; i < matrix[0].size(); i++) {
+        cout << i+1 << "   ";
     }
+    cout << endl << endl;
 }
 
+void trampas(vector<vector<celda>>& matrix) {
+    cout << "Ahora te pedire que digas los lugares en los que habra trampas y por los que no podras cruzar: " << endl;
+    string res;
+    do {
+        cout << "¿Quieres agregar alguna trampa? (s/n): ";
+        cin >> res;
+        if (res == "s") {
+            pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
+            cout << "Trampa agregada en la posicion (" << coordenadas.first << ", " << coordenadas.second << ")" << endl;
+            matrix[matrix.size() - 1 - coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
+            matrix[matrix.size() - 1 - coordenadas.first][coordenadas.second].paso = false;
+            printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
+        }
+        else if (res != "n") {
+            cout << "Respuesta invalida. Por favor, introduce 's' o 'n'." << endl;
+            res = "s";
+        }
 
+    } while (res == "s");
+}
 
-int main (){
-
+int main() {
     pair<int, int> dimensiones = pedirDimensiones();
     int filas = dimensiones.first;
     int columnas = dimensiones.second;
 
-    pair<int, int> coordenadasIni = pedirCoordenadasIni(filas, columnas);
-    pair<int, int> coordenadasFin = pedirCoordenadasFin(filas, columnas);
-
-    vector<vector<char>> matriz(filas, vector<char>(columnas, 0));
-    rellenarMatrix(matriz, coordenadasIni, coordenadasFin);
+    vector<vector<celda>> matriz(filas, vector<celda>(columnas));
     printMatrix(matriz);
+
+    pair<int, int> coordenadasIni = pedirCoordenadas("el punto inicial", filas, columnas);
+    pair<int, int> coordenadasFin = pedirCoordenadas("el punto final", filas, columnas);
+    matriz[matriz.size() - 1 - coordenadasIni.first][coordenadasIni.second].letra = 'I';
+    matriz[matriz.size() - 1 - coordenadasFin.first][coordenadasFin.second].letra = 'F';
+
+    printMatrix(matriz);
+
+    trampas(matriz);
+
 
     return 0;
 }
