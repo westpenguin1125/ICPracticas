@@ -12,8 +12,8 @@ class celda {
 public:
     char letra = ' ';
     bool paso = true;
-    int h = 0; // distancia desde punto actual hasta meta
-    int g = 0; // distancia desde origen hasta meta
+    double h = 0; // distancia desde punto actual hasta meta
+    double g = 0; // distancia desde origen hasta meta
 };
 
 //Funciones de main.cpp

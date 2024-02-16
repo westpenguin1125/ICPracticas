@@ -21,14 +21,14 @@ pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas) {
 
     cout << "Para " << tipo << ":" << endl;
     do {
-        cout << "Inserta la coordenada x (entre 1 y " << filas << "):" << endl;
+        cout << "Inserta la coordenada x (entre 1 y " << columnas << "):" << endl;
         cin >> x;
-    } while (x < 1 || x > filas);
+    } while (x < 1 || x > columnas);
 
     do {
-        cout << "Inserta la coordenada y (entre 1 y " << columnas << "):" << endl;
+        cout << "Inserta la coordenada y (entre 1 y " << filas << "):" << endl;
         cin >> y;
-    } while (y < 1 || y > columnas);
+    } while (y < 1 || y > filas);
 
     cout << endl;
     return make_pair(y-1, x-1);
@@ -45,9 +45,9 @@ void printMatrix(vector<vector<celda>> matrix) {
     }
     cout << endl;
 
-    for (int i = 0; i < matrix.size(); i++) {
+    for (int i = matrix.size() - 1; i >= 0; i--) { // Cambiar el orden de las filas
         // Contenido
-        cout << matrix.size() - i << " |";
+        cout << i + 1 << " |"; // Imprimir el índice de la fila
         for (int j = 0; j < matrix[i].size(); j++) {
             cout << " ";
             if (matrix[i][j].letra == 'I') {
@@ -77,10 +77,11 @@ void printMatrix(vector<vector<celda>> matrix) {
     // Imprimir los índices de las columnas
     cout << "    ";
     for (int i = 0; i < matrix[0].size(); i++) {
-        cout << i+1 << "   ";
+        cout << i + 1 << "   ";
     }
     cout << endl << endl;
 }
+
 
 void trampas(vector<vector<celda>>& matrix) {
     cout << "Ahora te pedire que digas los lugares en los que habra trampas y por los que no podras cruzar: " << endl;
@@ -91,8 +92,8 @@ void trampas(vector<vector<celda>>& matrix) {
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
             cout << "Trampa agregada en la posicion (" << coordenadas.first << ", " << coordenadas.second << ")" << endl;
-            matrix[matrix.size() - 1 - coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
-            matrix[matrix.size() - 1 - coordenadas.first][coordenadas.second].paso = false;
+            matrix[coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
+            matrix[coordenadas.first][coordenadas.second].paso = false;
             printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
         }
         else if (res != "n") {
@@ -113,19 +114,15 @@ int main() {
 
     pair<int, int> coordenadasIni = pedirCoordenadas("el punto inicial", filas, columnas);
     pair<int, int> coordenadasFin = pedirCoordenadas("el punto final", filas, columnas);
-    matriz[matriz.size() - 1 - coordenadasIni.first][coordenadasIni.second].letra = 'I';
-    matriz[matriz.size() - 1 - coordenadasFin.first][coordenadasFin.second].letra = 'F';
+    matriz[coordenadasIni.first][coordenadasIni.second].letra = 'I';
+    matriz[coordenadasFin.first][coordenadasFin.second].letra = 'F';
 
     printMatrix(matriz);
 
     trampas(matriz);
 
-    pair<int, int> inicio {coordenadasIni.second + 1, coordenadasIni.first + 1};
-    pair<int, int> final {coordenadasFin.second + 1, coordenadasFin.first + 1};
-
-    matriz[matriz.size() - 1 - coordenadasIni.first][coordenadasIni.second].h = distancia(inicio, final);
-
-    aEstrella(matriz, inicio, final);
+    matriz[coordenadasIni.first][coordenadasIni.second].h = distancia(coordenadasIni, coordenadasFin);
+    aEstrella(matriz, coordenadasIni, coordenadasFin);
 
     return 0;
 }
