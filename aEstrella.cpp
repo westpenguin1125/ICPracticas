@@ -1,8 +1,6 @@
 #include "celda.h"
 
 double distancia(pair<int, int> a, pair<int, int> b) {
-    cout << "Inicio: x: (" << a.first << ", " << a.second << ")" << endl;
-    cout << "Final: x: (" << b.first << ", " << b.second << ")" << endl;
     return sqrt((pow(b.first-a.first, 2)) + (pow(b.second-a.second, 2)));
 }
 

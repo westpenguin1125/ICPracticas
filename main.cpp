@@ -86,7 +86,7 @@ void trampas(vector<vector<celda>>& matrix) {
     cout << "Ahora te pedire que digas los lugares en los que habra trampas y por los que no podras cruzar: " << endl;
     string res;
     do {
-        cout << "¿Quieres agregar alguna trampa? (s/n): ";
+        cout << "Quieres agregar alguna trampa? (s/n): ";
         cin >> res;
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
