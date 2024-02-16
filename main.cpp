@@ -1,15 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include "colors.h"
-
-using namespace std;
-
-class celda {
-public:
-    char letra = ' ';
-    bool paso = true;
-};
+#include "celda.h"
 
 pair<int, int> pedirDimensiones() {
     int filas, columnas;
@@ -131,6 +120,12 @@ int main() {
 
     trampas(matriz);
 
+    pair<int, int> inicio {coordenadasIni.second + 1, coordenadasIni.first + 1};
+    pair<int, int> final {coordenadasFin.second + 1, coordenadasFin.first + 1};
+
+    matriz[matriz.size() - 1 - coordenadasIni.first][coordenadasIni.second].h = distancia(inicio, final);
+
+    aEstrella(matriz, inicio, final);
 
     return 0;
 }
