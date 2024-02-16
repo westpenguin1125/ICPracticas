@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "colors.h"
 
 using namespace std;
 
@@ -59,8 +60,20 @@ void printMatrix(vector<vector<celda>> matrix) {
         // Contenido
         cout << matrix.size() - i << " |";
         for (int j = 0; j < matrix[i].size(); j++) {
-            cout << " " << matrix[i][j].letra << " ";
-            cout << "|";
+            cout << " ";
+            if (matrix[i][j].letra == 'I') {
+                cout << YELLOW << matrix[i][j].letra << RESET;
+            }
+            else if (matrix[i][j].letra == 'F') {
+                cout << CYAN << matrix[i][j].letra << RESET;
+            }
+            else if (matrix[i][j].letra == 'X') {
+                cout << RED << matrix[i][j].letra << RESET;
+            }
+            else {
+                cout << matrix[i][j].letra;
+            }
+            cout << " |";
         }
         cout << endl;
 
