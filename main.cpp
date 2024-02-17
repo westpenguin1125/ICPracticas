@@ -59,6 +59,9 @@ void printMatrix(vector<vector<celda>> matrix) {
             else if (matrix[i][j].letra == 'X') {
                 cout << RED << matrix[i][j].letra << RESET;
             }
+            else if (matrix[i][j].letra == '.') {
+                cout << GREEN << matrix[i][j].letra << RESET;
+            }
             else {
                 cout << matrix[i][j].letra;
             }
@@ -121,8 +124,9 @@ int main() {
 
     trampas(matriz);
 
-    matriz[coordenadasIni.first][coordenadasIni.second].h = distancia(coordenadasIni, coordenadasFin);
-    aEstrella(matriz, coordenadasIni, coordenadasFin);
+    vector<pair<int, int>> camino = aEstrella(matriz, coordenadasIni, coordenadasFin);
+
+    imprimirCamino(camino, matriz);
 
     return 0;
 }

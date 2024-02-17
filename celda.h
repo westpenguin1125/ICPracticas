@@ -14,6 +14,8 @@ public:
     bool paso = true;
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta meta
+    double total = 0; // suma de h y g
+    pair<int,int> padre;
 };
 
 //Funciones de main.cpp
@@ -30,8 +32,8 @@ double distancia(pair<int, int> a, pair<int, int> b);
 
 bool dentroLimites(pair<int, int> coordenadas, int filas, int columnas);
 
-bool esTransitable(vector<vector<celda>>& matrix, pair<int, int> coordenadas);
+bool sePuedePasar(vector<vector<celda>>& matrix, pair<int, int> coordenadas);
 
 vector<pair<int, int>> aEstrella(vector<vector<celda>>& matrix, pair<int, int> inicio, pair<int, int> fin);
 
-void imprimirCamino(vector<pair<int, int>>& camino);
+void imprimirCamino(vector<pair<int, int>>& camino, vector<vector<celda>>& matriz);
