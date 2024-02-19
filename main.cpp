@@ -60,7 +60,7 @@ void printMatrix(vector<vector<celda>> matrix) {
                 cout << RED << matrix[i][j].letra << RESET;
             }
             else if (matrix[i][j].letra == '.') {
-                cout << GREEN << matrix[i][j].letra << RESET;
+                cout << GREEN << BG_GREEN << " " << RESET;
             }
             else {
                 cout << matrix[i][j].letra;

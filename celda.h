@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm> //para reverse
+#include <windows.h> // para sleep
+//#include <unistd.h> //sleep en linux
 #include "colors.h"
 
 using namespace std;
