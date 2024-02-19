@@ -2,11 +2,13 @@
 #include <queue>
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 #include <string>
 #include <algorithm> //para reverse
-#include <windows.h> // para sleep
-//#include <unistd.h> //sleep en linux
+//#include <windows.h> // para sleep
+#include <unistd.h> //sleep en linux
 #include "colors.h"
 
 using namespace std;
@@ -16,7 +18,7 @@ public:
     char letra = ' ';
     bool paso = true;
     double h = 0; // distancia desde punto actual hasta meta
-    double g = 0; // distancia desde origen hasta meta
+    double g = 0; // distancia desde origen hasta el punto actual
     double total = 0; // suma de h y g
     pair<int,int> padre;
 };
@@ -25,6 +27,10 @@ public:
 pair<int, int> pedirDimensiones();
 
 pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas);
+
+pair<int, int> cargarDimensiones(const std::string& filePath);
+
+pair<int, int> cargarCoordenadas(const std::string& filePath, const std::string& tipo);
 
 void printMatrix(vector<vector<celda>> matrix);
 

@@ -34,6 +34,15 @@ pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas) {
     return make_pair(y-1, x-1);
 }
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <utility>
+#include <string>
+
+using namespace std;
+
+
 void printMatrix(vector<vector<celda>> matrix) {
     cout << endl;
     // Imprimir la esquina superior izquierda
