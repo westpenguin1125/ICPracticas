@@ -1,7 +1,7 @@
 #include "celda.h"
 
 double distancia(pair<int, int> a, pair<int, int> b) {
-    return sqrt((pow((b.second+1)-(a.second+1), 2)) + (pow((b.first+1)-(a.first+1), 2)));
+    return sqrt((pow((b.second+1)-(a.second+1), 2)) + (pow((b.first+1)-(a.first+1), 2))) * 10;
 }
 
 bool sePuedePasar(vector<vector<celda>>& matrix, pair<int, int> coordenadas) {
@@ -46,16 +46,18 @@ vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> i
         cout << "actual: " << actual.first << ", " << actual.second << " |" << endl;
         for (auto movimiento : movimientos) {
             pair<int, int> nuevaCoordenada = {actual.first + movimiento.first, actual.second + movimiento.second};
-
+            int nuevoG;
             // si la nueva coordenada está dentro de los límites de la matriz y si se puede pasar por ahi
             if ( dentroLimites(nuevaCoordenada, filas, columnas) 
                     && sePuedePasar(matriz, nuevaCoordenada) 
                     && !en_cerrado[nuevaCoordenada.first][nuevaCoordenada.second] ) {
 
                 // calcular el coste de movimiento desde el inicio
-                int nuevoG = matriz[actual.first][actual.second].g + 1; //ortogonal
+                 nuevoG = matriz[actual.first][actual.second].g + 10; //ortogonal
                 if (abs(movimiento.first) == 1 && abs(movimiento.second) == 1) { //diagonal
-                    nuevoG = matriz[actual.first][actual.second].g + 1.4;
+                    cout << " -----diagonal-----";
+                    nuevoG = matriz[actual.first][actual.second].g + 14;
+                    cout << nuevoG << endl;
                 }
                 
                 cout << "nuevaCoordenada: " << nuevaCoordenada.first << ", " << nuevaCoordenada.second << " |";
