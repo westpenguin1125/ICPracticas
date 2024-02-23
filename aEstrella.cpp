@@ -28,6 +28,13 @@ vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> i
     matriz[inicio.first][inicio.second].g = 0;
     matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g;
     abierto_priority.push(make_pair(-matriz[inicio.first][inicio.second].total, inicio));
+
+    // inicializamos la última casilla
+    matriz[fin.first][fin.second].h = 0;
+    matriz[fin.first][fin.second].g = distancia(inicio, fin);
+    matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g;
+    matriz[fin.first][fin.second].padre = fin;
+
     
     while (!abierto_priority.empty()) {
         // celda con menor costo total
@@ -85,6 +92,12 @@ vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> i
                 }
             }
         }
+    }
+
+    // si no hay camino, terminar la búsqueda
+    if (matriz[fin.first][fin.second].padre == fin) {
+        cout << "No hay camino posible" << endl;
+        return camino;
     }
 
     // reconstruir el camino desde la celda final hasta la celda inicial
