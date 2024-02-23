@@ -12,7 +12,7 @@ bool dentroLimites(pair<int, int> coordenadas, int filas, int columnas) {
     return (coordenadas.first >= 0 && coordenadas.first < filas && coordenadas.second >= 0 && coordenadas.second < columnas);
 }
 
-vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> inicio, pair<int, int> fin) {
+vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> inicio, pair<int, int> fin, vector<pair<int, int>> waypoints) {
     cout << "Ahora veremos el camino mas rapido hacia la meta mediante el uso del algoritmo A*" << endl;
     int filas = matriz.size();
     int columnas = matriz[0].size();
@@ -34,7 +34,6 @@ vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> i
     matriz[fin.first][fin.second].g = distancia(inicio, fin);
     matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g;
     matriz[fin.first][fin.second].padre = fin;
-
     
     while (!abierto_priority.empty()) {
         // celda con menor costo total
@@ -115,12 +114,14 @@ vector<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> i
 }
 
 void imprimirCamino(vector<pair<int, int>>& camino, vector<vector<celda>>& matriz) {
-    cout << "Camino: ";
-    for (auto coordenadas : camino) { // imprimimos el camino con una pausa de un segundo por cada movimiento
-        matriz[coordenadas.first][coordenadas.second].letra = '.';
-        printMatrix(matriz);
-        //Sleep(1000); // Sleep 1 segundo para windows
-        sleep(1); // Sleep 1 segundo para linux
+    if (!camino.empty()) {
+        cout << "Camino: ";
+        for (auto coordenadas : camino) { // imprimimos el camino con una pausa de un segundo por cada movimiento
+            matriz[coordenadas.first][coordenadas.second].letra = '.';
+            printMatrix(matriz);
+            Sleep(1000); // Sleep 1 segundo para windows
+            //sleep(1); // Sleep 1 segundo para linux
+        }
+        cout << endl;
     }
-    cout << endl;
 }

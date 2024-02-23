@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 #include <algorithm> //para reverse
-//#include <windows.h> // para sleep
-#include <unistd.h> //sleep en linux
+#include <windows.h> // para sleep
+//#include <unistd.h> //sleep en linux
 #include "colors.h"
 
 using namespace std;
@@ -43,6 +43,6 @@ bool dentroLimites(pair<int, int> coordenadas, int filas, int columnas);
 
 bool sePuedePasar(vector<vector<celda>>& matrix, pair<int, int> coordenadas);
 
-vector<pair<int, int>> aEstrella(vector<vector<celda>>& matrix, pair<int, int> inicio, pair<int, int> fin);
+vector<pair<int, int>> aEstrella(vector<vector<celda>>& matrix, pair<int, int> inicio, pair<int, int> fin, vector<pair<int, int>> wp);
 
 void imprimirCamino(vector<pair<int, int>>& camino, vector<vector<celda>>& matriz);

@@ -68,6 +68,9 @@ void printMatrix(vector<vector<celda>> matrix) {
             else if (matrix[i][j].letra == 'X') {
                 cout << RED << matrix[i][j].letra << RESET;
             }
+            else if (matrix[i][j].letra == 'W') {
+                cout << ORANGE << matrix[i][j].letra << RESET;
+            }
             else if (matrix[i][j].letra == '.') {
                 cout << GREEN << BG_GREEN << " " << RESET;
             }
@@ -103,7 +106,7 @@ void trampas(vector<vector<celda>>& matrix) {
         cin >> res;
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
-            cout << "Trampa agregada en la posicion (" << coordenadas.first << ", " << coordenadas.second << ")" << endl;
+            cout << "Trampa agregada en la posicion (" << coordenadas.second+1 << ", " << coordenadas.first+1 << ")" << endl;
             matrix[coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
             matrix[coordenadas.first][coordenadas.second].paso = false;
             printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
@@ -114,6 +117,29 @@ void trampas(vector<vector<celda>>& matrix) {
         }
 
     } while (res == "s");
+}
+
+vector<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
+    vector<pair<int, int>> waypoints;
+    cout << "Ahora te pedire que digas los lugares en los que habra waypoints y por los que deberas cruzar: " << endl;
+    string res;
+    do {
+        cout << "Quieres agregar algun waypoint? (s/n): ";
+        cin >> res;
+        if (res == "s") {
+            pair<int, int> coordenadas = pedirCoordenadas("el waypoint", matrix.size(), matrix[0].size());
+            cout << "Waypoint agregado en la posicion (" << coordenadas.second+1 << ", " << coordenadas.first+1 << ")" << endl;
+            matrix[coordenadas.first][coordenadas.second].letra = 'W'; // Agregar waypoint a la matriz con coordenadas invertidas
+            waypoints.push_back(make_pair(coordenadas.first, coordenadas.second));
+            printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
+        }
+        else if (res != "n") {
+            cout << "Respuesta invalida. Por favor, introduce 's' o 'n'." << endl;
+            res = "s";
+        }
+
+    } while (res == "s");
+    return waypoints;
 }
 
 int main() {
@@ -133,7 +159,9 @@ int main() {
 
     trampas(matriz);
 
-    vector<pair<int, int>> camino = aEstrella(matriz, coordenadasIni, coordenadasFin);
+    vector<pair<int, int>> wp = waypoints(matriz);
+
+    vector<pair<int, int>> camino = aEstrella(matriz, coordenadasIni, coordenadasFin, wp);
 
     imprimirCamino(camino, matriz);
 
