@@ -4,14 +4,14 @@ pair<int, int> pedirDimensiones() {
     int filas, columnas;
 
     do {
-        cout << "Inserta el numero de filas (mayor que 0):" << endl;
+        cout << "Inserta el numero de filas (mayor que 0 y menor que 10):" << endl;
         cin >> filas;
-    } while (filas <= 0);
+    } while (filas <= 0 || filas > 9);
 
     do {
-        cout << "Inserta el numero de columnas (mayor que 0):" << endl;
+        cout << "Inserta el numero de columnas (mayor que 0 y menor que 10):" << endl;
         cin >> columnas;
-    } while (columnas <= 0);
+    } while (columnas <= 0 || filas > 9);
 
     return make_pair(filas, columnas);
 }
@@ -114,22 +114,22 @@ void trampas(vector<vector<celda>>& matrix) {
     } while (res == "s");
 }
 
-double pedirIndice(){
+double pedirIndice() {
     double indice = 0;    
-    cout << "Indice de peligro (1 a 10):" << endl;
+    cout << "Indice de peligro (1 a 9):" << endl;
     cin >> indice;
-    while (indice < 1 || indice > 10){
-        cout << "Por favor, introduzca un indice de peligro entre 1 y 10: " << endl;
+    while (indice < 1 || indice > 9){
+        cout << "Por favor, introduzca un indice de peligro entre 1 y 9: " << endl;
     }
     return indice;
 
 }
 
 void peligros(vector<vector<celda>>& matrix) {
-    cout << "Ahora te pedire que digas los lugares en los que habra peligro y será dificil cruzar: " << endl;
+    cout << "Ahora te pedire que digas los lugares en los que habra peligro y sera dificil cruzar: " << endl;
     string res;
     do {
-        cout << "Quieres agregar algún peligro? (s/n): ";
+        cout << "Quieres agregar algun peligro? (s/n): ";
         cin >> res;
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("el peligro", matrix.size(), matrix[0].size());

@@ -102,9 +102,6 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
     }
     camino.push(inicio);
 
-    // invertir el camino para que esté en el orden correcto
-    // reverse(camino.front(), camino.back());
-
     return camino;
 }
 
@@ -115,8 +112,8 @@ void imprimirCamino(queue<pair<int, int>>& camino, vector<vector<celda>>& matriz
             matriz[camino.front().first][camino.front().second].letra = '.';
             printMatrix(matriz);
             camino.pop();
-            //Sleep(1000); // Sleep 1 segundo para windows
-            sleep(1); // Sleep 1 segundo para linux
+            Sleep(1000); // Sleep 1 segundo para windows
+            //sleep(1); // Sleep 1 segundo para linux
         }
         cout << endl;
     }
