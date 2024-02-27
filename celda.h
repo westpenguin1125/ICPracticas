@@ -20,7 +20,7 @@ public:
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta el punto actual
     double total = 0; // suma de h y g
-    pair<int,int> padre;
+    pair<int, int> padre;
 };
 
 //Funciones de main.cpp
@@ -43,6 +43,6 @@ bool dentroLimites(pair<int, int> coordenadas, int filas, int columnas);
 
 bool sePuedePasar(vector<vector<celda>>& matrix, pair<int, int> coordenadas);
 
-vector<pair<int, int>> aEstrella(vector<vector<celda>>& matrix, pair<int, int> inicio, pair<int, int> fin, vector<pair<int, int>> wp);
+queue<pair<int, int>> aEstrella(vector<vector<celda>>& matrix, pair<int, int> inicio, pair<int, int> fin);
 
-void imprimirCamino(vector<pair<int, int>>& camino, vector<vector<celda>>& matriz);
+void imprimirCamino(queue<pair<int, int>>& camino, vector<vector<celda>>& matriz);

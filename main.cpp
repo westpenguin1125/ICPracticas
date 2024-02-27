@@ -31,16 +31,8 @@ pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas) {
     } while (y < 1 || y > filas);
 
     cout << endl;
-    return make_pair(y-1, x-1);
+    return make_pair(y - 1, x - 1);
 }
-
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <utility>
-#include <string>
-
-using namespace std;
 
 
 void printMatrix(vector<vector<celda>> matrix) {
@@ -106,7 +98,7 @@ void trampas(vector<vector<celda>>& matrix) {
         cin >> res;
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
-            cout << "Trampa agregada en la posicion (" << coordenadas.second+1 << ", " << coordenadas.first+1 << ")" << endl;
+            cout << "Trampa agregada en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             matrix[coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
             matrix[coordenadas.first][coordenadas.second].paso = false;
             printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
@@ -119,8 +111,8 @@ void trampas(vector<vector<celda>>& matrix) {
     } while (res == "s");
 }
 
-vector<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
-    vector<pair<int, int>> waypoints;
+queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
+    queue<pair<int, int>> waypoints;
     cout << "Ahora te pedire que digas los lugares en los que habra waypoints y por los que deberas cruzar: " << endl;
     string res;
     do {
@@ -128,9 +120,9 @@ vector<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
         cin >> res;
         if (res == "s") {
             pair<int, int> coordenadas = pedirCoordenadas("el waypoint", matrix.size(), matrix[0].size());
-            cout << "Waypoint agregado en la posicion (" << coordenadas.second+1 << ", " << coordenadas.first+1 << ")" << endl;
+            cout << "Waypoint agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             matrix[coordenadas.first][coordenadas.second].letra = 'W'; // Agregar waypoint a la matriz con coordenadas invertidas
-            waypoints.push_back(make_pair(coordenadas.first, coordenadas.second));
+            waypoints.push(make_pair(coordenadas.first, coordenadas.second));
             printMatrix(matrix); // Imprimir la matriz después de agregar una trampa
         }
         else if (res != "n") {
@@ -159,11 +151,27 @@ int main() {
 
     trampas(matriz);
 
-    vector<pair<int, int>> wp = waypoints(matriz);
+    queue<pair<int, int>> wp = waypoints(matriz);
+    queue<pair<int, int>> camino;
+    queue<pair<int, int>> caminoReal;
+    pair<int, int> inicio = coordenadasIni;
+    while (!wp.empty()) {
+        camino = aEstrella(matriz, wp.front(), inicio);
+        while (!camino.empty()) {
+            caminoReal.push(camino.front());
+            camino.pop();
+        }
+        inicio = wp.front();
+        wp.pop();
+    }
 
-    vector<pair<int, int>> camino = aEstrella(matriz, coordenadasIni, coordenadasFin, wp);
+    camino = aEstrella(matriz, coordenadasFin, inicio);
+    while (!camino.empty()) {
+        caminoReal.push(camino.front());
+        camino.pop();
+    }
 
-    imprimirCamino(camino, matriz);
+    imprimirCamino(caminoReal, matriz);
 
     return 0;
 }
