@@ -63,6 +63,9 @@ void printMatrix(vector<vector<celda>> matrix) {
             else if (matrix[i][j].letra == 'W') {
                 cout << ORANGE << matrix[i][j].letra << RESET;
             }
+            else if (matrix[i][j].letra == 'P') {
+                cout << RED << matrix[i][j].p << RESET;
+            }
             else if (matrix[i][j].letra == '.') {
                 cout << GREEN << BG_GREEN << " " << RESET;
             }
@@ -111,6 +114,40 @@ void trampas(vector<vector<celda>>& matrix) {
     } while (res == "s");
 }
 
+double pedirIndice(){
+    double indice = 0;    
+    cout << "Indice de peligro (1 a 10):" << endl;
+    cin >> indice;
+    while (indice < 1 || indice > 10){
+        cout << "Por favor, introduzca un indice de peligro entre 1 y 10: " << endl;
+    }
+    return indice;
+
+}
+
+void peligros(vector<vector<celda>>& matrix) {
+    cout << "Ahora te pedire que digas los lugares en los que habra peligro y será dificil cruzar: " << endl;
+    string res;
+    do {
+        cout << "Quieres agregar algún peligro? (s/n): ";
+        cin >> res;
+        if (res == "s") {
+            pair<int, int> coordenadas = pedirCoordenadas("el peligro", matrix.size(), matrix[0].size());
+            matrix[coordenadas.first][coordenadas.second].p = pedirIndice(); 
+            matrix[coordenadas.first][coordenadas.second].letra = 'P';
+
+
+            cout << "Peligro de indice " << matrix[coordenadas.first][coordenadas.second].p << "agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
+            printMatrix(matrix); // Imprimir la matriz después de agregar un peligro
+        }
+        else if (res != "n") {
+            cout << "Respuesta invalida. Por favor, introduce 's' o 'n'." << endl;
+            res = "s";
+        }
+
+    } while (res == "s");
+}
+
 queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
     queue<pair<int, int>> waypoints;
     cout << "Ahora te pedire que digas los lugares en los que habra waypoints y por los que deberas cruzar: " << endl;
@@ -134,6 +171,8 @@ queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
     return waypoints;
 }
 
+
+
 int main() {
     pair<int, int> dimensiones = pedirDimensiones();
     int filas = dimensiones.first;
@@ -151,6 +190,8 @@ int main() {
 
     trampas(matriz);
 
+    peligros(matriz);
+
     queue<pair<int, int>> wp = waypoints(matriz);
     queue<pair<int, int>> camino;
     queue<pair<int, int>> caminoReal;
@@ -165,6 +206,7 @@ int main() {
         wp.pop();
     }
 
+    //último trazo
     camino = aEstrella(matriz, coordenadasFin, inicio);
     while (!camino.empty()) {
         caminoReal.push(camino.front());

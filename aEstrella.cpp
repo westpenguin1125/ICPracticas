@@ -41,15 +41,12 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
         abierto_priority.pop();
 
         en_cerrado[actual.first][actual.second] = true; // marcar celda como visitada
-        cout << "Total actual: " << matriz[actual.first][actual.second].total << endl;
-
+        
         if (actual == fin) { // si la celda actual es la celda final, terminar la búsqueda
              break;
         }
 
         vector<pair<int, int>> movimientos = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
-        cout << "----------------------------------------" << endl;
-        cout << "actual: " << actual.first << ", " << actual.second << " |" << endl;
         for (auto movimiento : movimientos) {
             pair<int, int> nuevaCoordenada = { actual.first + movimiento.first, actual.second + movimiento.second };
             int nuevoG;
@@ -66,9 +63,7 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                     cout << nuevoG << endl;
                 }
 
-                cout << "nuevaCoordenada: " << nuevaCoordenada.first << ", " << nuevaCoordenada.second << " |";
-                cout << "nuevoG: " << nuevoG << " |";
-                cout << "matriz[nuevaCoordenada.first][nuevaCoordenada.second].g: " << matriz[nuevaCoordenada.first][nuevaCoordenada.second].g << endl;
+                
                 // si la celda no ha sido visitada o el nuevo coste de movimiento es menor que el anterior
                 if (!en_abierto[nuevaCoordenada.first][nuevaCoordenada.second]
                     || nuevoG < matriz[nuevaCoordenada.first][nuevaCoordenada.second].g) {
@@ -76,7 +71,7 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                     // actualizar el coste de movimiento
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].g = nuevoG;
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].h = distancia(nuevaCoordenada, fin);
-                    matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h;
+                    matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
 
                     // marcar la celda actual como padre de la nueva celda
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].padre = actual;
@@ -120,8 +115,8 @@ void imprimirCamino(queue<pair<int, int>>& camino, vector<vector<celda>>& matriz
             matriz[camino.front().first][camino.front().second].letra = '.';
             printMatrix(matriz);
             camino.pop();
-            Sleep(1000); // Sleep 1 segundo para windows
-            //sleep(1); // Sleep 1 segundo para linux
+            //Sleep(1000); // Sleep 1 segundo para windows
+            sleep(1); // Sleep 1 segundo para linux
         }
         cout << endl;
     }

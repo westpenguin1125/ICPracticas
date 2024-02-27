@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 #include <algorithm> //para reverse
-#include <windows.h> // para sleep
-//#include <unistd.h> //sleep en linux
+//#include <windows.h> // para sleep
+#include <unistd.h> //sleep en linux
 #include "colors.h"
 
 using namespace std;
@@ -19,6 +19,7 @@ public:
     bool paso = true;
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta el punto actual
+    double p = 0; // indice de peligrosidad
     double total = 0; // suma de h y g
     pair<int, int> padre;
 };
