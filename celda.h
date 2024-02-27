@@ -29,13 +29,17 @@ pair<int, int> pedirDimensiones();
 
 pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas);
 
-pair<int, int> cargarDimensiones(const std::string& filePath);
-
-pair<int, int> cargarCoordenadas(const std::string& filePath, const std::string& tipo);
-
 void printMatrix(vector<vector<celda>> matrix);
 
 void trampas(vector<vector<celda>>& matrix);
+
+bool comprobarLibre(vector<vector<celda>> matrix, pair<int, int> coordenadas);
+
+double pedirIndice();
+
+void peligros(vector<vector<celda>>& matrix);
+
+queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix);
 
 //Funciones de aEstrella.cpp
 double distancia(pair<int, int> a, pair<int, int> b);

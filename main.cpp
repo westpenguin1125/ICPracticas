@@ -31,6 +31,7 @@ pair<int, int> pedirCoordenadas(string tipo, int filas, int columnas) {
     } while (y < 1 || y > filas);
 
     cout << endl;
+    
     return make_pair(y - 1, x - 1);
 }
 
@@ -92,6 +93,13 @@ void printMatrix(vector<vector<celda>> matrix) {
     cout << endl << endl;
 }
 
+bool comprobarLibre(vector<vector<celda>> matrix, pair<int, int> coordenadas) {
+    if (matrix[coordenadas.first][coordenadas.second].letra == ' ') {
+        return true;
+    }
+    cout << "La casilla ya esta ocupada. Por favor, elija otro lugar." << endl;
+    return false;
+}
 
 void trampas(vector<vector<celda>>& matrix) {
     cout << "Ahora te pedire que digas los lugares en los que habra trampas y por los que no podras cruzar: " << endl;
@@ -100,7 +108,11 @@ void trampas(vector<vector<celda>>& matrix) {
         cout << "Quieres agregar alguna trampa? (s/n): ";
         cin >> res;
         if (res == "s") {
-            pair<int, int> coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
+            pair<int, int> coordenadas;
+            do {
+                coordenadas = pedirCoordenadas("la trampa", matrix.size(), matrix[0].size());
+            } while (!comprobarLibre(matrix, coordenadas));
+            
             cout << "Trampa agregada en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             matrix[coordenadas.first][coordenadas.second].letra = 'X'; // Agregar trampa a la matriz con coordenadas invertidas
             matrix[coordenadas.first][coordenadas.second].paso = false;
@@ -132,7 +144,11 @@ void peligros(vector<vector<celda>>& matrix) {
         cout << "Quieres agregar algun peligro? (s/n): ";
         cin >> res;
         if (res == "s") {
-            pair<int, int> coordenadas = pedirCoordenadas("el peligro", matrix.size(), matrix[0].size());
+            pair<int, int> coordenadas;
+            do {
+                coordenadas = pedirCoordenadas("el peligro", matrix.size(), matrix[0].size());
+            } while (!comprobarLibre(matrix, coordenadas));
+
             matrix[coordenadas.first][coordenadas.second].p = pedirIndice(); 
             matrix[coordenadas.first][coordenadas.second].letra = 'P';
 
@@ -155,7 +171,11 @@ queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix) {
         cout << "Quieres agregar algun waypoint? (s/n): ";
         cin >> res;
         if (res == "s") {
-            pair<int, int> coordenadas = pedirCoordenadas("el waypoint", matrix.size(), matrix[0].size());
+            pair<int, int> coordenadas;
+            do {
+                coordenadas = pedirCoordenadas("el waypoint", matrix.size(), matrix[0].size());
+            } while (!comprobarLibre(matrix, coordenadas));
+            
             cout << "Waypoint agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             matrix[coordenadas.first][coordenadas.second].letra = 'W'; // Agregar waypoint a la matriz con coordenadas invertidas
             waypoints.push(make_pair(coordenadas.first, coordenadas.second));
@@ -181,8 +201,12 @@ int main() {
     printMatrix(matriz);
 
     pair<int, int> coordenadasIni = pedirCoordenadas("el punto inicial", filas, columnas);
-    pair<int, int> coordenadasFin = pedirCoordenadas("el punto final", filas, columnas);
     matriz[coordenadasIni.first][coordenadasIni.second].letra = 'I';
+
+    pair<int, int> coordenadasFin;
+    do {
+        coordenadasFin = pedirCoordenadas("el punto final", filas, columnas);
+    } while (!comprobarLibre(matriz, coordenadasFin));
     matriz[coordenadasFin.first][coordenadasFin.second].letra = 'F';
 
     printMatrix(matriz);
