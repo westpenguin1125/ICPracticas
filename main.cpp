@@ -136,7 +136,6 @@ void peligros(vector<vector<celda>>& matrix) {
             matrix[coordenadas.first][coordenadas.second].p = pedirIndice(); 
             matrix[coordenadas.first][coordenadas.second].letra = 'P';
 
-
             cout << "Peligro de indice " << matrix[coordenadas.first][coordenadas.second].p << "agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             printMatrix(matrix); // Imprimir la matriz después de agregar un peligro
         }
@@ -214,6 +213,8 @@ int main() {
     }
 
     imprimirCamino(caminoReal, matriz);
+    matriz[coordenadasFin.first][coordenadasFin.second].letra = '.';
+    printMatrix(matriz);
 
     return 0;
 }

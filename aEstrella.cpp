@@ -100,7 +100,6 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
         camino.push(actual);
         actual = matriz[actual.first][actual.second].padre;
     }
-    camino.push(inicio);
 
     return camino;
 }
