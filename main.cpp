@@ -149,7 +149,7 @@ void peligros(vector<vector<celda>>& matrix) {
                 coordenadas = pedirCoordenadas("el peligro", matrix.size(), matrix[0].size());
             } while (!comprobarLibre(matrix, coordenadas));
 
-            matrix[coordenadas.first][coordenadas.second].p = pedirIndice(); 
+            matrix[coordenadas.first][coordenadas.second].p = pedirIndice() * 10; 
             matrix[coordenadas.first][coordenadas.second].letra = 'P';
 
             cout << "Peligro de indice " << matrix[coordenadas.first][coordenadas.second].p << "agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
