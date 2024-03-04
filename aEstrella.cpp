@@ -43,7 +43,7 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
         en_cerrado[actual.first][actual.second] = true; // marcar celda como visitada
         
         if (actual == fin) { // si la celda actual es la celda final, terminar la búsqueda
-             break;
+            break;
         }
 
         vector<pair<int, int>> movimientos = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
@@ -72,13 +72,12 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].g = nuevoG;
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].h = distancia(nuevaCoordenada, fin);
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
-
+                    
                     // marcar la celda actual como padre de la nueva celda
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].padre = actual;
 
                     // si la celda no ha sido visitada, añadirla a la lista de celdas a explorar
-                    if (!en_abierto[nuevaCoordenada.first][nuevaCoordenada.second])
-                    {
+                    if (!en_abierto[nuevaCoordenada.first][nuevaCoordenada.second]) {
                         en_abierto[nuevaCoordenada.first][nuevaCoordenada.second] = true;
                         abierto_priority.push(make_pair(-matriz[nuevaCoordenada.first][nuevaCoordenada.second].total, nuevaCoordenada));
                     }

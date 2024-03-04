@@ -89,7 +89,7 @@ void printMatrix(vector<vector<celda>> matrix) {
                     cout << RED << matrix[i][j].p / 10 << RESET;
                 }
                 else {
-                    cout << matrix[i][j].letra;
+                    cout << matrix[i][j].letra << RESET;
                 }
             }
             cout << " |";
