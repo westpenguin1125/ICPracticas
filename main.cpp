@@ -86,7 +86,7 @@ void printMatrix(vector<vector<celda>> matrix) {
                     cout << ORANGE << matrix[i][j].letra << RESET;
                 }
                 else if (matrix[i][j].letra == 'P') {
-                    cout << RED << matrix[i][j].p / 10 << RESET;
+                    cout << RED << matrix[i][j].p / 10<< RESET;
                 }
                 else {
                     cout << matrix[i][j].letra << RESET;

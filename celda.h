@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 #include <algorithm> //para reverse
-#include <windows.h> // para sleep
-//#include <unistd.h> //sleep en linux
+//include <windows.h> // para sleep
+#include <unistd.h> //sleep en linux
 #include "colors.h"
 
 using namespace std;
@@ -43,7 +43,7 @@ void peligros(vector<vector<celda>>& matrix);
 queue<pair<int, int>> waypoints(vector<vector<celda>>& matrix);
 
 //Funciones de aEstrella.cpp
-double distancia(pair<int, int> a, pair<int, int> b);
+int distancia(pair<int, int> a, pair<int, int> b);
 
 bool dentroLimites(pair<int, int> coordenadas, int filas, int columnas);
 
