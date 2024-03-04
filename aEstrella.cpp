@@ -26,13 +26,13 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
     // inicializamos la primera casilla
     matriz[inicio.first][inicio.second].h = distancia(inicio, fin);
     matriz[inicio.first][inicio.second].g = 0;
-    matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g;
+    matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g + matriz[inicio.first][inicio.second].p;
     abierto_priority.push(make_pair(-matriz[inicio.first][inicio.second].total, inicio));
 
     // inicializamos la última casilla
     matriz[fin.first][fin.second].h = 0;
     matriz[fin.first][fin.second].g = distancia(inicio, fin);
-    matriz[inicio.first][inicio.second].total = matriz[inicio.first][inicio.second].h + matriz[inicio.first][inicio.second].g;
+    matriz[fin.first][fin.second].total = matriz[fin.first][fin.second].h + matriz[fin.first][fin.second].g + matriz[fin.first][fin.second].p;
     matriz[fin.first][fin.second].padre = fin;
 
     while (!abierto_priority.empty()) {
