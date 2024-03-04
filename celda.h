@@ -17,6 +17,7 @@ class celda {
 public:
     char letra = ' ';
     bool paso = true;
+    bool camino = false;
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta el punto actual
     double p = 0; // indice de peligrosidad

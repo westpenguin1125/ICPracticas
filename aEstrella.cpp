@@ -108,7 +108,7 @@ void imprimirCamino(queue<pair<int, int>>& camino, vector<vector<celda>>& matriz
     if (!camino.empty()) {
         cout << "Camino: ";
         while (!camino.empty()) { // imprimimos el camino con una pausa de un segundo por cada movimiento
-            matriz[camino.front().first][camino.front().second].letra = '.';
+            matriz[camino.front().first][camino.front().second].camino = true;
             printMatrix(matriz);
             camino.pop();
             Sleep(1000); // Sleep 1 segundo para windows

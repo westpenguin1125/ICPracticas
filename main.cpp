@@ -52,26 +52,45 @@ void printMatrix(vector<vector<celda>> matrix) {
         cout << i + 1 << " |"; // Imprimir el índice de la fila
         for (int j = 0; j < matrix[i].size(); j++) {
             cout << " ";
-            if (matrix[i][j].letra == 'I') {
-                cout << YELLOW << matrix[i][j].letra << RESET;
-            }
-            else if (matrix[i][j].letra == 'F') {
-                cout << CYAN << matrix[i][j].letra << RESET;
-            }
-            else if (matrix[i][j].letra == 'X') {
-                cout << RED << matrix[i][j].letra << RESET;
-            }
-            else if (matrix[i][j].letra == 'W') {
-                cout << ORANGE << matrix[i][j].letra << RESET;
-            }
-            else if (matrix[i][j].letra == 'P') {
-                cout << RED << matrix[i][j].p / 10 << RESET;
-            }
-            else if (matrix[i][j].letra == '.') {
-                cout << GREEN << BG_GREEN << " " << RESET;
+            if (matrix[i][j].camino) {
+                if (matrix[i][j].letra == 'I') {
+                    cout << BG_GREEN << YELLOW << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'F') {
+                    cout << BG_GREEN << CYAN << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'X') {
+                    cout << BG_GREEN << RED << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'W') {
+                    cout << BG_GREEN << ORANGE << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'P') {
+                    cout << BG_GREEN << RED << matrix[i][j].p / 10 << RESET;
+                }
+                else {
+                    cout << BG_GREEN << matrix[i][j].letra << RESET;
+                }
             }
             else {
-                cout << matrix[i][j].letra;
+                if (matrix[i][j].letra == 'I') {
+                    cout << YELLOW << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'F') {
+                    cout << CYAN << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'X') {
+                    cout << RED << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'W') {
+                    cout << ORANGE << matrix[i][j].letra << RESET;
+                }
+                else if (matrix[i][j].letra == 'P') {
+                    cout << RED << matrix[i][j].p / 10 << RESET;
+                }
+                else {
+                    cout << matrix[i][j].letra;
+                }
             }
             cout << " |";
         }
@@ -152,7 +171,7 @@ void peligros(vector<vector<celda>>& matrix) {
             matrix[coordenadas.first][coordenadas.second].p = pedirIndice() * 10; 
             matrix[coordenadas.first][coordenadas.second].letra = 'P';
 
-            cout << "Peligro de indice " << matrix[coordenadas.first][coordenadas.second].p << "agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
+            cout << "Peligro de indice " << matrix[coordenadas.first][coordenadas.second].p/10 << " agregado en la posicion (" << coordenadas.second + 1 << ", " << coordenadas.first + 1 << ")" << endl;
             printMatrix(matrix); // Imprimir la matriz después de agregar un peligro
         }
         else if (res != "n") {
@@ -237,7 +256,7 @@ int main() {
     }
 
     imprimirCamino(caminoReal, matriz);
-    matriz[coordenadasFin.first][coordenadasFin.second].letra = '.';
+    matriz[coordenadasFin.first][coordenadasFin.second].camino = true;
     printMatrix(matriz);
 
     return 0;
