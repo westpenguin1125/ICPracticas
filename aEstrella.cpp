@@ -60,10 +60,12 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                 if (abs(movimiento.first) == 1 && abs(movimiento.second) == 1) { //diagonal
                     nuevoG = matriz[actual.first][actual.second].g + 14;
                 }
-
+                
                 matriz[nuevaCoordenada.first][nuevaCoordenada.second].p += matriz[actual.first][actual.second].p;
                 matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
 
+                //int pTotal =  matriz[nuevaCoordenada.first][nuevaCoordenada.second].p + matriz[actual.first][actual.second].p;
+                //matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + pTotal;
                 
                 // si la celda no ha sido visitada o el nuevo coste de movimiento es menor que el anterior
                 if (!en_abierto[nuevaCoordenada.first][nuevaCoordenada.second]
@@ -112,8 +114,8 @@ void imprimirCamino(queue<pair<int, int>>& camino, vector<vector<celda>>& matriz
             printMatrix(matriz);
             camino.pop();
             
-            //Sleep(1000); // Sleep 1 segundo para windows
-            sleep(1); // Sleep 1 segundo para linux
+            Sleep(1000); // Sleep 1 segundo para windows
+            //sleep(1); // Sleep 1 segundo para linux
         }
         cout << endl;
     }
