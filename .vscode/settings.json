@@ -5,7 +5,9 @@
     "vector": "cpp",
     "utility": "cpp",
     "xstring": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "algorithm": "cpp",
+    "sstream": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

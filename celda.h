@@ -20,7 +20,8 @@ public:
     bool camino = false;
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta el punto actual
-    double p = 0; // indice de peligrosidad
+    double p = 0; // indice de peligrosidad asignado
+    double p_acum = 0; // indice de peligrosidad acumulado
     double total = 0; // suma de h y g
     pair<int, int> padre;
 };

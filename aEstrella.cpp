@@ -60,9 +60,9 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                 if (abs(movimiento.first) == 1 && abs(movimiento.second) == 1) { //diagonal
                     nuevoG = matriz[actual.first][actual.second].g + 14;
                 }
-                
-                matriz[nuevaCoordenada.first][nuevaCoordenada.second].p += matriz[actual.first][actual.second].p;
-                matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
+                matriz[nuevaCoordenada.first][nuevaCoordenada.second].p_acum = matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
+                matriz[nuevaCoordenada.first][nuevaCoordenada.second].p_acum += matriz[actual.first][actual.second].p_acum;
+                matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p_acum;
 
                 //int pTotal =  matriz[nuevaCoordenada.first][nuevaCoordenada.second].p + matriz[actual.first][actual.second].p;
                 //matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + pTotal;
@@ -74,7 +74,7 @@ queue<pair<int, int>> aEstrella(vector<vector<celda>>& matriz, pair<int, int> in
                     // actualizar el coste de movimiento
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].g = nuevoG;
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].h = distancia(nuevaCoordenada, fin);
-                    matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p;
+                    matriz[nuevaCoordenada.first][nuevaCoordenada.second].total = matriz[nuevaCoordenada.first][nuevaCoordenada.second].g + matriz[nuevaCoordenada.first][nuevaCoordenada.second].h + matriz[nuevaCoordenada.first][nuevaCoordenada.second].p_acum;
                     
                     // marcar la celda actual como padre de la nueva celda
                     matriz[nuevaCoordenada.first][nuevaCoordenada.second].padre = actual;
