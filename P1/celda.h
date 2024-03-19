@@ -15,15 +15,16 @@ using namespace std;
 
 class celda {
 public:
-    char letra = ' ';
-    bool paso = true;
-    bool camino = false;
+    char letra = ' '; // La letra que se muestra en la vista
+    bool camino = false; // Si es camino o no, para la vista
+
+    bool paso = true; // Si es trampa o no
     double h = 0; // distancia desde punto actual hasta meta
     double g = 0; // distancia desde origen hasta el punto actual
-    double p = 0; // indice de peligrosidad asignado
-    double p_acum = 0; // indice de peligrosidad acumulado
-    double total = 0; // suma de h y g
-    pair<int, int> padre;
+    double p = 0; // indice de peligrosidad asignado (el que se muestra)
+    double p_acum = 0; // indice de peligrosidad acumulado (calculo interno)
+    double total = 0; // suma de h, g y p_acum
+    pair<int, int> padre; // Las coordenadas x,y de la casilla padre
 };
 
 //Funciones de main.cpp
