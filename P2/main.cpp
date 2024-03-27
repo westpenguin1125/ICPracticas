@@ -1,10 +1,13 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <cmath>
+
 
 using namespace std;
 
@@ -17,10 +20,9 @@ struct Ejemplo {
 // Estructura para un atributo
 struct Atributo {
     string nombre;
-    vector<string> valores;
 };
 
-// Función para leer el fichero de atributos
+// Función para leer el fichero AtributosJuego.txt
 vector<Atributo> leerAtributos(const string& filename) {
     vector<Atributo> atributos;
     ifstream file(filename);
@@ -44,132 +46,149 @@ vector<Atributo> leerAtributos(const string& filename) {
 }
 
 
-// Función para leer el fichero de juegos
-vector<Ejemplo> leerEjemplos(const string& filename, const vector<Atributo>& atributos) {
+// Función para leer el fichero Juego.txt
+vector<Ejemplo> leerEjemplos(const string& filename, vector<Atributo> atributos) {
     vector<Ejemplo> ejemplos;
     ifstream file(filename);
-    string line;
-    while (getline(file, line)) {
+    string linea;
+    int id = 0;
+    while (getline(file, linea)) {
+        if (linea.empty()) {
+            break;
+        }
         Ejemplo ejemplo;
-        stringstream ss(line);
+        stringstream ss(linea);
         string atributo;
-        int id = 0;
         while (getline(ss, atributo, ',')) {
-            cout << "Leyendo atributo: " << atributo << " para el atributo " << atributos[id].nombre << endl;
             ejemplo.atributos[atributos[id].nombre] = atributo;
             id++;
         }
-        ejemplo.decision = ejemplo.atributos[atributos.back().nombre];
-        ejemplo.atributos.erase(atributos.back().nombre);
+        ejemplo.decision = ejemplo.atributos["Jugar"];
+        ejemplo.atributos.erase("Jugar");
         ejemplos.push_back(ejemplo);
+        id = 0;
     }
     file.close();
     return ejemplos;
 }
 
 // Función para calcular la entropía
-double calcularEntropia(const vector<Ejemplo>& ejemplos) {
-    unordered_map<string, int> decisiones;
-    for (const auto& ejemplo : ejemplos) {
-        decisiones[ejemplo.decision]++;
+double calcularEntropia(vector<Ejemplo>& ejemplos) {
+    map<string, int> decisionCounts;
+    for (auto& ejemplo : ejemplos) {
+        decisionCounts[ejemplo.decision]++;
     }
     double entropia = 0.0;
-    for (const auto& par : decisiones) {
-        double probabilidad = static_cast<double>(par.second) / ejemplos.size();
+    for (auto& pair : decisionCounts) {
+        double probabilidad = (double)pair.second / ejemplos.size();
         entropia -= probabilidad * log2(probabilidad);
     }
     return entropia;
 }
 
-// Función para calcular la ganancia de información
-double calcularGanancia(const vector<Ejemplo>& ejemplos, const Atributo& atributo) {
-    unordered_map<string, vector<Ejemplo>> subconjuntos;
-    for (const auto& ejemplo : ejemplos) {
-        subconjuntos[ejemplo.atributos.at(atributo.nombre)].push_back(ejemplo);
+// Función para dividir un conjunto de ejemplos según un atributo dado
+map<string, vector<Ejemplo>> dividirEjemplos(vector<Ejemplo>& ejemplos, string atributo) {
+    map<string, vector<Ejemplo>> subconjuntos;
+    for (auto& ejemplo : ejemplos) {
+        string valor_atributo = ejemplo.atributos.at(atributo);
+        subconjuntos[valor_atributo].push_back(ejemplo);
     }
-    double ganancia = calcularEntropia(ejemplos);
-    for (const auto& par : subconjuntos) {
-        double probabilidad = static_cast<double>(par.second.size()) / ejemplos.size();
-        ganancia -= probabilidad * calcularEntropia(par.second);
-    }
-    return ganancia;
+    return subconjuntos;
 }
 
-// Función para seleccionar el mejor atributo
-Atributo seleccionarMejorAtributo(const vector<Ejemplo>& ejemplos, const vector<Atributo>& atributos) {
-    double mejorGanancia = -1.0;
-    Atributo mejorAtributo;
-    for (const auto& atributo : atributos) {
-        double ganancia = calcularGanancia(ejemplos, atributo);
+// Función para seleccionar el mejor atributo para dividir
+string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos) {
+    double entropiaInicial = calcularEntropia(ejemplos);
+    double mejorGanancia = 0.0;
+    string mejorAtributo;
+
+    for (auto& atributo : atributos) {
+        map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, atributo.nombre);
+        double ganancia = entropiaInicial;
+        for (auto& pair : subconjuntos) {
+            double peso = (double)pair.second.size() / ejemplos.size();
+            ganancia -= peso * calcularEntropia(pair.second);
+        }
         if (ganancia > mejorGanancia) {
             mejorGanancia = ganancia;
-            mejorAtributo = atributo;
+            mejorAtributo = atributo.nombre;
         }
     }
     return mejorAtributo;
 }
 
-// Función para construir el árbol de decisión
-void construirArbol(const vector<Ejemplo>& ejemplos, const vector<Atributo>& atributos) {
-    // Caso base: Si todos los ejemplos tienen la misma decisión
+// Función principal para el algoritmo ID3
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
+    // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
-    for (const auto& ejemplo : ejemplos) {
+    for (auto& ejemplo : ejemplos) {
         if (ejemplo.decision != decision) {
             mismaDecision = false;
             break;
         }
     }
     if (mismaDecision) {
-        cout << "  " << decision << endl; // Imprimir la decisión
+        cout << string(nivel, '\t') << "Atributo seleccionado: (Misma decision) " << decision << endl;
         return;
     }
 
-    // Caso base: Si no hay más atributos para dividir
-    if (atributos.empty()) {
-        // Seleccionar la decisión más común entre los ejemplos restantes
-        unordered_map<string, int> conteoDecisiones;
-        string decisionMasComun;
-        int maxCount = 0;
-        for (const auto& ejemplo : ejemplos) {
-            conteoDecisiones[ejemplo.decision]++;
-            if (conteoDecisiones[ejemplo.decision] > maxCount) {
-                maxCount = conteoDecisiones[ejemplo.decision];
-                decisionMasComun = ejemplo.decision;
-            }
+    // Caso base si no hay más atributos para dividir
+    /*if (atributos.empty()) {
+        cout << string(nivel, '\t') << "Atributo seleccionado: (no hay más atributos para dividir) No hay decision posible" << endl;
+        return;
+    }*/
+
+    // Seleccionar el mejor atributo para dividir
+    string mejorAtributo = seleccionarMejorAtributo(ejemplos, atributos);
+    cout << "Atributo seleccionado: " << mejorAtributo << endl;
+
+    // Recursión para los subárboles
+    vector<Atributo> nuevosAtributos = atributos;
+    for (auto it = nuevosAtributos.begin(); it != nuevosAtributos.end(); ++it) {
+        if (it->nombre == mejorAtributo) {
+            nuevosAtributos.erase(it);
+            break;
         }
-        cout << "  " << decisionMasComun << endl; // Imprimir la decisión más común
-        return;
     }
 
-    // Seleccionar el mejor atributo
-    Atributo mejorAtributo = seleccionarMejorAtributo(ejemplos, atributos);
-    cout << mejorAtributo.nombre << ":" << endl; // Imprimir el nombre del atributo
-
-    // Dividir los ejemplos en subconjuntos según el valor del mejor atributo
-    unordered_map<string, vector<Ejemplo>> subconjuntos;
-    for (const auto& ejemplo : ejemplos) {
-        //subconjuntos[ejemplo.atributos[mejorAtributo.nombre]].push_back(ejemplo);
-        subconjuntos[ejemplo.atributos.find(mejorAtributo.nombre)->second].push_back(ejemplo);
-
-    }
-
-    // Recursivamente construir el árbol para cada subconjunto de ejemplos
-    for (const auto& par : subconjuntos) {
-        cout << "  " << par.first << " -> ";
-        construirArbol(par.second, atributos); // Recursión
+    map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, mejorAtributo);
+    for (auto& pair : subconjuntos) {
+        cout << string(nivel, '\t') << "Valores de " << mejorAtributo << ": " << pair.first << endl;
+        ID3(pair.second, nuevosAtributos, nivel + 1);
     }
 }
 
+// Función para imprimir los atributos y ejemplos en forma de tabla
+void imprimirTabla(const vector<Atributo>& atributos, const vector<Ejemplo>& ejemplos) {
+    // Imprimir encabezado
+    for (const auto& atributo : atributos) {
+        cout << setw(15) << atributo.nombre;
+    }
+    cout << setw(15) << "Decision" << endl;
 
+    // Imprimir valores
+    for (size_t i = 0; i < ejemplos.size(); ++i) {
+        for (const auto& atributo : atributos) {
+            cout << setw(15) << ejemplos[i].atributos.at(atributo.nombre);
+        }
+        cout << setw(15) << ejemplos[i].decision << endl;
+    }
+    cout << endl;
+}
 
 int main() {
+    cout << "Construyendo arbol de decision..." << endl;
     // Lectura de los ficheros
     vector<Atributo> atributos = leerAtributos("AtributosJuego.txt");
     vector<Ejemplo> ejemplos = leerEjemplos("Juego.txt", atributos);
-    
+    atributos.pop_back();
+
+    // Imprimir la tabla
+    imprimirTabla(atributos, ejemplos);
+
     // Construcción del árbol de decisión
-    construirArbol(ejemplos, atributos);
+    ID3(ejemplos, atributos, 0);
 
     return 0;
 }
