@@ -55,6 +55,7 @@ vector<Ejemplo> leerEjemplos(const string& filename, const vector<Atributo>& atr
         string atributo;
         int id = 0;
         while (getline(ss, atributo, ',')) {
+            cout << "Leyendo atributo: " << atributo << " para el atributo " << atributos[id].nombre << endl;
             ejemplo.atributos[atributos[id].nombre] = atributo;
             id++;
         }
@@ -65,7 +66,6 @@ vector<Ejemplo> leerEjemplos(const string& filename, const vector<Atributo>& atr
     file.close();
     return ejemplos;
 }
-
 
 // Función para calcular la entropía
 double calcularEntropia(const vector<Ejemplo>& ejemplos) {
@@ -164,13 +164,12 @@ void construirArbol(const vector<Ejemplo>& ejemplos, const vector<Atributo>& atr
 
 
 int main() {
-    cout << "PROFA" << endl;
     // Lectura de los ficheros
     vector<Atributo> atributos = leerAtributos("AtributosJuego.txt");
     vector<Ejemplo> ejemplos = leerEjemplos("Juego.txt", atributos);
     
     // Construcción del árbol de decisión
-    // construirArbol(ejemplos, atributos);
+    construirArbol(ejemplos, atributos);
 
     return 0;
 }
