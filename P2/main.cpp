@@ -118,7 +118,7 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 }
 
 // Función principal para el algoritmo ID3
-void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<string>& conclusiones, int nivel) {
     // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
@@ -129,15 +129,18 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
         }
     }
     if (mismaDecision) {
+        string conclusion = "Si ";
+        for (size_t i = 0; i < atributos.size(); ++i) {
+            conclusion += atributos[i].nombre + " = " + ejemplos[0].atributos[atributos[i].nombre];
+            if (i < atributos.size() - 1) {
+                conclusion += " y ";
+            }
+        }
+        conclusion += " entonces Jugar = " + decision;
+        conclusiones.push_back(conclusion);
         cout << string(nivel, '\t') << "Atributo seleccionado: (Misma decision) " << decision << endl;
         return;
     }
-
-    // Caso base si no hay más atributos para dividir
-    /*if (atributos.empty()) {
-        cout << string(nivel, '\t') << "Atributo seleccionado: (no hay más atributos para dividir) No hay decision posible" << endl;
-        return;
-    }*/
 
     // Seleccionar el mejor atributo para dividir
     string mejorAtributo = seleccionarMejorAtributo(ejemplos, atributos);
@@ -155,7 +158,7 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
     map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, mejorAtributo);
     for (auto& pair : subconjuntos) {
         cout << string(nivel, '\t') << "Valores de " << mejorAtributo << ": " << pair.first << endl;
-        ID3(pair.second, nuevosAtributos, nivel + 1);
+        ID3(pair.second, nuevosAtributos, conclusiones, nivel + 1);
     }
 }
 
@@ -187,8 +190,15 @@ int main() {
     // Imprimir la tabla
     imprimirTabla(atributos, ejemplos);
 
+    vector<string> conclusiones;
     // Construcción del árbol de decisión
-    ID3(ejemplos, atributos, 0);
+    ID3(ejemplos, atributos, conclusiones, 0);
 
+    // Imprimir conclusiones
+    cout << "\nConclusiones:" << endl;
+    for (const auto& conclusion : conclusiones) {
+        cout << conclusion << endl;
+    }
+    
     return 0;
 }
