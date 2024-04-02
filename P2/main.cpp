@@ -22,8 +22,9 @@ struct Atributo {
     string nombre;
 };
 
+
 // Función para leer el fichero AtributosJuego.txt
-vector<Atributo> leerAtributos(const string& filename) {
+vector<Atributo> leerAtributos(const string& filename, vector<Ejemplo>& conclusiones) {
     vector<Atributo> atributos;
     ifstream file(filename);
     if (!file.is_open()) {
@@ -32,6 +33,7 @@ vector<Atributo> leerAtributos(const string& filename) {
     }
 
     string linea;
+    Ejemplo aux;
     while (getline(file, linea)) {
         stringstream ss(linea);
         string palabra;
@@ -39,7 +41,9 @@ vector<Atributo> leerAtributos(const string& filename) {
             Atributo atributo;
             atributo.nombre = palabra;
             atributos.push_back(atributo);
+            aux.atributos[palabra] = "";
         }
+        conclusiones.push_back(aux);
     }
     file.close();
     return atributos;
@@ -118,7 +122,7 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 }
 
 // Función principal para el algoritmo ID3
-void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<string>& conclusiones, int nivel) {
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<Ejemplo>& conclusiones, int nivel) {
     // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
@@ -129,15 +133,18 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<string>&
         }
     }
     if (mismaDecision) {
-        string conclusion = "Si ";
-        for (size_t i = 0; i < atributos.size(); ++i) {
-            conclusion += atributos[i].nombre + " = " + ejemplos[0].atributos[atributos[i].nombre];
-            if (i < atributos.size() - 1) {
-                conclusion += " y ";
-            }
+        Ejemplo aux;
+        //string conclusion = "Si ";
+        for (int i = 0; i < atributos.size(); i++) {
+            aux.atributos[atributos[i].nombre] = ejemplos[0].atributos[atributos[i].nombre];
+            //conclusion += atributos[i].nombre + " = " + ejemplos[0].atributos[atributos[i].nombre];
+            //if (i < atributos.size() - 1) {
+                //conclusion += " y ";
+            //}
         }
-        conclusion += " entonces Jugar = " + decision;
-        conclusiones.push_back(conclusion);
+        //conclusion += " entonces Jugar = " + decision;
+        aux.decision = decision;
+        conclusiones.push_back(aux);
         cout << string(nivel, '\t') << "Atributo seleccionado: (Misma decision) " << decision << endl;
         return;
     }
@@ -183,22 +190,33 @@ void imprimirTabla(const vector<Atributo>& atributos, const vector<Ejemplo>& eje
 int main() {
     cout << "Construyendo arbol de decision..." << endl;
     // Lectura de los ficheros
-    vector<Atributo> atributos = leerAtributos("AtributosJuego.txt");
+    vector<Ejemplo> conclusiones;
+    vector<Atributo> atributos = leerAtributos("AtributosJuego.txt", conclusiones);
     vector<Ejemplo> ejemplos = leerEjemplos("Juego.txt", atributos);
     atributos.pop_back();
 
     // Imprimir la tabla
     imprimirTabla(atributos, ejemplos);
 
-    vector<string> conclusiones;
     // Construcción del árbol de decisión
     ID3(ejemplos, atributos, conclusiones, 0);
 
     // Imprimir conclusiones
     cout << "\nConclusiones:" << endl;
     for (const auto& conclusion : conclusiones) {
-        cout << conclusion << endl;
+        
+        cout << "Si ";
+        for (const auto& par : conclusion.atributos) {
+            if (!par.second.empty()) {
+                cout << par.first << " = " << par.second << " y ";
+            }
+
+        }
+            
+        cout << "Entonces Jugar = " << conclusion.decision << endl;
+        
     }
+
     
     return 0;
 }
