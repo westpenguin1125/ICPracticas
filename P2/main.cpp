@@ -103,7 +103,7 @@ map<string, vector<Ejemplo>> dividirEjemplos(vector<Ejemplo>& ejemplos, string a
 // Función para seleccionar el mejor atributo para dividir
 string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos) {
     double entropiaInicial = calcularEntropia(ejemplos);
-    double mejorGanancia = 0.0;
+    double mejorGanancia = 1000.0;
     string mejorAtributo;
 
     for (auto& atributo : atributos) {
@@ -113,7 +113,7 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
             double peso = (double)pair.second.size() / ejemplos.size();
             ganancia -= peso * calcularEntropia(pair.second);
         }
-        if (ganancia > mejorGanancia) {
+        if (ganancia < mejorGanancia) {
             mejorGanancia = ganancia;
             mejorAtributo = atributo.nombre;
         }
@@ -123,7 +123,7 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 
 // Función principal para el algoritmo ID3
 void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<Ejemplo>& conclusiones, int nivel) {
-    // Caso base si todos tienen la misma decision
+    // Caso base si todos tienen la misma dec ision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
     for (auto& ejemplo : ejemplos) {
