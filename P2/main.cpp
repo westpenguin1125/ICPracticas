@@ -103,7 +103,7 @@ map<string, vector<Ejemplo>> dividirEjemplos(vector<Ejemplo>& ejemplos, string a
 string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos) {
     double mejorGanancia = 1.0;
     string mejorAtributo;
-
+    
     for (auto& atributo : atributos) {
         map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, atributo.nombre);
         double ganancia = 0.0;
@@ -111,6 +111,7 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
             double peso = (double)pair.second.size() / ejemplos.size();
             ganancia += peso * calcularEntropia(pair.second);
         }
+        cout << atributo.nombre << " = " << ganancia << endl;
         if (ganancia < mejorGanancia) {
             mejorGanancia = ganancia;
             mejorAtributo = atributo.nombre;
@@ -120,7 +121,10 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 }
 
 // Función principal para el algoritmo ID3
-void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, string& conclusion) {
+    cout << "Iteracion " << nivel << endl;
+    cout << "--------------------" << endl;
+
     // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
@@ -131,17 +135,18 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
         }
     }
     if (mismaDecision) {
+        cout << "Llegada a caso base" << endl << endl;
         for (int i = 0; i < nivel; ++i) {
-            cout << "\t";
+            conclusion += "\t";
         }
-        cout << "Entonces Decision = " + decision << endl;
+        conclusion += "Entonces Decision = " + decision + "\n";
         return;
         
     }
 
     // Seleccionar el mejor atributo para dividir
     string mejorAtributo = seleccionarMejorAtributo(ejemplos, atributos);
-
+    cout << endl;
     // Recursión para los subárboles
     vector<Atributo> nuevosAtributos = atributos;
     for (auto it = nuevosAtributos.begin(); it != nuevosAtributos.end(); ++it) {
@@ -154,10 +159,10 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
     map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, mejorAtributo);
     for (auto& pair : subconjuntos) {
         for (int i = 0; i < nivel; ++i) {
-            cout << "\t";
+            conclusion += "\t";
         }
-        cout << "Si " << mejorAtributo << " = " << pair.first << endl;
-        ID3(pair.second, nuevosAtributos, nivel + 1);
+        conclusion += "Si " + mejorAtributo + " = " + pair.first + "\n";
+        ID3(pair.second, nuevosAtributos, nivel + 1, conclusion);
     }
 }
 
@@ -189,8 +194,12 @@ int main() {
     // Imprimir la tabla
     imprimirTabla(atributos, ejemplos);
 
+    string conclusion;
+
     // Construcción del árbol de decisión
-    ID3(ejemplos, atributos, 0);
+    ID3(ejemplos, atributos, 0, conclusion);
+
+    cout << conclusion << endl;
     
     return 0;
 }
