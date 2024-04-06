@@ -24,7 +24,7 @@ struct Atributo {
 
 
 // Función para leer el fichero AtributosJuego.txt
-vector<Atributo> leerAtributos(const string& filename, vector<Ejemplo>& conclusiones) {
+vector<Atributo> leerAtributos(const string& filename) {
     vector<Atributo> atributos;
     ifstream file(filename);
     if (!file.is_open()) {
@@ -43,7 +43,6 @@ vector<Atributo> leerAtributos(const string& filename, vector<Ejemplo>& conclusi
             atributos.push_back(atributo);
             aux.atributos[palabra] = "";
         }
-        conclusiones.push_back(aux);
     }
     file.close();
     return atributos;
@@ -102,16 +101,15 @@ map<string, vector<Ejemplo>> dividirEjemplos(vector<Ejemplo>& ejemplos, string a
 
 // Función para seleccionar el mejor atributo para dividir
 string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos) {
-    double entropiaInicial = calcularEntropia(ejemplos);
-    double mejorGanancia = 1000.0;
+    double mejorGanancia = 1.0;
     string mejorAtributo;
 
     for (auto& atributo : atributos) {
         map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, atributo.nombre);
-        double ganancia = entropiaInicial;
+        double ganancia = 0.0;
         for (auto& pair : subconjuntos) {
             double peso = (double)pair.second.size() / ejemplos.size();
-            ganancia -= peso * calcularEntropia(pair.second);
+            ganancia += peso * calcularEntropia(pair.second);
         }
         if (ganancia < mejorGanancia) {
             mejorGanancia = ganancia;
@@ -122,8 +120,8 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 }
 
 // Función principal para el algoritmo ID3
-void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<Ejemplo>& conclusiones, int nivel) {
-    // Caso base si todos tienen la misma dec ision
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel) {
+    // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
     string decision = ejemplos[0].decision;
     for (auto& ejemplo : ejemplos) {
@@ -133,25 +131,16 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<Ejemplo>
         }
     }
     if (mismaDecision) {
-        Ejemplo aux;
-        //string conclusion = "Si ";
-        for (int i = 0; i < atributos.size(); i++) {
-            aux.atributos[atributos[i].nombre] = ejemplos[0].atributos[atributos[i].nombre];
-            //conclusion += atributos[i].nombre + " = " + ejemplos[0].atributos[atributos[i].nombre];
-            //if (i < atributos.size() - 1) {
-                //conclusion += " y ";
-            //}
+        for (int i = 0; i < nivel; ++i) {
+            cout << "\t";
         }
-        //conclusion += " entonces Jugar = " + decision;
-        aux.decision = decision;
-        conclusiones.push_back(aux);
-        cout << string(nivel, '\t') << "Atributo seleccionado: (Misma decision) " << decision << endl;
+        cout << "Entonces Decision = " + decision << endl;
         return;
+        
     }
 
     // Seleccionar el mejor atributo para dividir
     string mejorAtributo = seleccionarMejorAtributo(ejemplos, atributos);
-    cout << "Atributo seleccionado: " << mejorAtributo << endl;
 
     // Recursión para los subárboles
     vector<Atributo> nuevosAtributos = atributos;
@@ -161,11 +150,14 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, vector<Ejemplo>
             break;
         }
     }
-
+    
     map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, mejorAtributo);
     for (auto& pair : subconjuntos) {
-        cout << string(nivel, '\t') << "Valores de " << mejorAtributo << ": " << pair.first << endl;
-        ID3(pair.second, nuevosAtributos, conclusiones, nivel + 1);
+        for (int i = 0; i < nivel; ++i) {
+            cout << "\t";
+        }
+        cout << "Si " << mejorAtributo << " = " << pair.first << endl;
+        ID3(pair.second, nuevosAtributos, nivel + 1);
     }
 }
 
@@ -190,8 +182,7 @@ void imprimirTabla(const vector<Atributo>& atributos, const vector<Ejemplo>& eje
 int main() {
     cout << "Construyendo arbol de decision..." << endl;
     // Lectura de los ficheros
-    vector<Ejemplo> conclusiones;
-    vector<Atributo> atributos = leerAtributos("AtributosJuego.txt", conclusiones);
+    vector<Atributo> atributos = leerAtributos("AtributosJuego.txt");
     vector<Ejemplo> ejemplos = leerEjemplos("Juego.txt", atributos);
     atributos.pop_back();
 
@@ -199,24 +190,7 @@ int main() {
     imprimirTabla(atributos, ejemplos);
 
     // Construcción del árbol de decisión
-    ID3(ejemplos, atributos, conclusiones, 0);
-
-    // Imprimir conclusiones
-    cout << "\nConclusiones:" << endl;
-    for (const auto& conclusion : conclusiones) {
-        
-        cout << "Si ";
-        for (const auto& par : conclusion.atributos) {
-            if (!par.second.empty()) {
-                cout << par.first << " = " << par.second << " y ";
-            }
-
-        }
-            
-        cout << "Entonces Jugar = " << conclusion.decision << endl;
-        
-    }
-
+    ID3(ejemplos, atributos, 0);
     
     return 0;
 }
