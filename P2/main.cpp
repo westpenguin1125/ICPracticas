@@ -22,38 +22,6 @@ struct Atributo {
     string nombre;
 };
 
-// Estructura para la conclusión. Arbol n-ario
-class node{
-public:
-    string atributo;
-    string valor;
-    bool decision;
-
-    node *parent;
-    vector<node *> children;
-
-    node(node *parent) : parent(parent)
-    {
-    }
-
-    void add_child(node *child) { children.push_back(child); }
-
-    // Función para liberar la memoria de forma recursiva
-    void destroy_tree(node* root) {
-        if (!root) return;
-        for (node* child : root->children) {
-            destroy_tree(child);
-        }
-        delete root;
-    }
-
-    // Destructor personalizado
-    ~node() {
-        destroy_tree(this);
-    }
-};
-
-
 
 // Función para leer el fichero AtributosJuego.txt
 vector<Atributo> leerAtributos(const string& filename) {
@@ -153,13 +121,9 @@ string seleccionarMejorAtributo(vector<Ejemplo>& ejemplos, vector<Atributo>& atr
 }
 
 // Función principal para el algoritmo ID3
-void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, string& conclusion, node arbolConclusion) {
+void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, string& conclusion, vector<Ejemplo>& v_conclusion, Ejemplo ejemploAux) {
     cout << "Iteracion " << nivel << endl;
     cout << "--------------------" << endl;
-
-    if (arbolConclusion.parent != &arbolConclusion){
-        
-    }
 
     // Caso base si todos tienen la misma decision
     bool mismaDecision = true;
@@ -176,7 +140,8 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, stri
             conclusion += "\t";
         }
         conclusion += "Entonces Decision = " + decision + "\n";
-        arbolConclusion.decision = (decision == "si" ? true : false);
+        ejemploAux.decision = decision;
+        v_conclusion.push_back(ejemploAux);
         return;
         
     }
@@ -195,22 +160,62 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, stri
     }
     
     map<string, vector<Ejemplo>> subconjuntos = dividirEjemplos(ejemplos, mejorAtributo);
-    for (auto& pair : subconjuntos) {
+    for (auto& pair : subconjuntos) { 
         for (int i = 0; i < nivel; ++i) {
             conclusion += "\t";
         }
         conclusion += "Si " + mejorAtributo + " = " + pair.first + "\n";
-
-        node* hijo = new node(&arbolConclusion);
-        hijo->atributo = mejorAtributo;
-        hijo->valor = pair.first;
-        arbolConclusion.add_child(hijo);
-
-        ID3(pair.second, nuevosAtributos, nivel + 1, conclusion, hijo);
+        ejemploAux.atributos[mejorAtributo] = pair.first;
+        ID3(pair.second, nuevosAtributos, nivel + 1, conclusion, v_conclusion, ejemploAux);
+        ejemploAux.atributos.erase(mejorAtributo);
     }
 }
 
-bool comprobarConclusion(const vector<Atributo>& atributos, const vector<Ejemplo>& ejemplos, node conclusion){
+bool comprobarConclusion(const  vector<Ejemplo>& ejemplos,const vector<Ejemplo>& conclusiones){
+    bool correcto = true;
+    int nEjemplos = ejemplos.size();
+    cout << conclusiones.size() << endl;
+    // para cada ejemplo
+    int idEjemplo = 0;
+    for (auto &ejemplo : ejemplos){
+        idEjemplo++;
+        cout <<  endl;
+        cout << "_________" << endl;
+        cout << "Ejemplo " << idEjemplo << endl; 
+        cout << "_________" << endl;
+        // se mira cada conclusion
+        for(int i = 0; i < conclusiones.size(); i++){
+            cout << "   ------ " << i << endl;
+
+            //Si todos los atributos de una conclusión aciertan
+            int nAtributosC = conclusiones[i].atributos.size();
+            for(auto& atributo : conclusiones[i].atributos){
+                if (auto atributo1 = ejemplo.atributos.find(atributo.first); atributo1 != ejemplo.atributos.end()){
+                    if (atributo1->second == atributo.second)
+                    {
+                    nAtributosC--;
+                    }
+                    cout << atributo.second << " | " << ejemplo.atributos.find(atributo.first)->second<< endl;
+                    
+                }
+            }
+            if(nAtributosC <= 0){
+                if (ejemplo.decision == conclusiones[i].decision){
+                    cout << "---!!!!CORRECTO ("<<idEjemplo<<" )(" << i << ")" << endl;;
+                    break;
+                }
+                else{
+
+                    cout << "¿¿¿¿¿¿¿¿FALSO ("<<idEjemplo<<" )(" << i << ")------------------------------" << endl;;
+                    correcto = false;
+                }
+                
+            }
+            
+        }
+        
+    }
+    return correcto;
 
 }
 
@@ -242,15 +247,40 @@ int main() {
     // Imprimir la tabla
     imprimirTabla(atributos, ejemplos);
 
+
     string conclusion;
-    node *arbolConclusion = new node(arbolConclusion);
+
+    vector<Ejemplo> v_conclusion;
+    Ejemplo ejemploAux;
+
+    
 
     // Construcción del árbol de decisión
-    ID3(ejemplos, atributos, 0, conclusion, arbolConclusion);
-
-    delete arbolConclusion;
-
+    ID3(ejemplos, atributos, 0, conclusion, v_conclusion, ejemploAux);
     cout << conclusion << endl;
+
+    for (auto& conclusion : v_conclusion)
+    {
+        for(auto& atributo : conclusion.atributos){
+            cout << atributo.second << ", ";
+        }
+        cout << conclusion.decision << endl;
+
+    }
+
+    cout << endl << endl;
+    bool correcto = comprobarConclusion(ejemplos, v_conclusion);
     
+    cout << endl << endl;
+    if (correcto)
+    {
+        cout << "Corecto";
+    }
+    else{
+        cout << "Falso";
+    }
+    cout << endl;
+    
+
     return 0;
 }

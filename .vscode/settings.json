@@ -8,7 +8,8 @@
     "cmath": "cpp",
     "algorithm": "cpp",
     "sstream": "cpp",
-    "unordered_map": "cpp"
+    "unordered_map": "cpp",
+    "memory": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
