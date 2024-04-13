@@ -190,7 +190,8 @@ bool comprobarConclusion(const  vector<Ejemplo>& ejemplos,const vector<Ejemplo>&
             //Si todos los atributos de una conclusión aciertan
             int nAtributosC = conclusiones[i].atributos.size();
             for(auto& atributo : conclusiones[i].atributos){
-                if (auto atributo1 = ejemplo.atributos.find(atributo.first); atributo1 != ejemplo.atributos.end()){
+                auto atributo1 = ejemplo.atributos.find(atributo.first);
+                if ( atributo1 != ejemplo.atributos.end()){
                     if (atributo1->second == atributo.second)
                     {
                     nAtributosC--;

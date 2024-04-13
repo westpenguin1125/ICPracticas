@@ -1,16 +1,4 @@
 {
-  "files.associations": {
-    "ostream": "cpp",
-    "iostream": "cpp",
-    "vector": "cpp",
-    "utility": "cpp",
-    "xstring": "cpp",
-    "cmath": "cpp",
-    "algorithm": "cpp",
-    "sstream": "cpp",
-    "unordered_map": "cpp",
-    "memory": "cpp"
-  },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
   "C_Cpp_Runner.debuggerPath": "gdb",
@@ -67,5 +55,9 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "files.associations": {
+    "memory": "cpp",
+    "utility": "cpp"
+  }
 }
