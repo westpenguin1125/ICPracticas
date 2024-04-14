@@ -171,53 +171,47 @@ void ID3(vector<Ejemplo>& ejemplos, vector<Atributo>& atributos, int nivel, stri
     }
 }
 
-bool comprobarConclusion(const  vector<Ejemplo>& ejemplos,const vector<Ejemplo>& conclusiones){
+bool comprobarConclusion(const vector<Ejemplo>& ejemplos, const vector<Ejemplo>& conclusiones) {
     bool correcto = true;
     int nEjemplos = ejemplos.size();
-    cout << conclusiones.size() << endl;
     // para cada ejemplo
     int idEjemplo = 0;
-    for (auto &ejemplo : ejemplos){
+    for (auto &ejemplo : ejemplos) {
         idEjemplo++;
         cout <<  endl;
-        cout << "_________" << endl;
         cout << "Ejemplo " << idEjemplo << endl; 
-        cout << "_________" << endl;
+        cout << "----------";
         // se mira cada conclusion
-        for(int i = 0; i < conclusiones.size(); i++){
-            cout << "   ------ " << i << endl;
+        for(int i = 0; i < conclusiones.size(); i++) {
+            cout << "\nConclusion " << i+1 << ": " << endl;
 
             //Si todos los atributos de una conclusión aciertan
             int nAtributosC = conclusiones[i].atributos.size();
-            for(auto& atributo : conclusiones[i].atributos){
+            for(auto& atributo : conclusiones[i].atributos) {
                 auto atributo1 = ejemplo.atributos.find(atributo.first);
-                if ( atributo1 != ejemplo.atributos.end()){
-                    if (atributo1->second == atributo.second)
-                    {
-                    nAtributosC--;
+                if ( atributo1 != ejemplo.atributos.end()) {
+                    if (atributo1->second == atributo.second) {
+                        nAtributosC--;
                     }
-                    cout << atributo.second << " | " << ejemplo.atributos.find(atributo.first)->second<< endl;
-                    
+                    cout << "\tAtributo conclusion " << i+1 << ": " << atributo.second << " | ";
+                    cout << "Atributo ejemplo " << idEjemplo << ": " << ejemplo.atributos.find(atributo.first)->second << endl;
                 }
             }
-            if(nAtributosC <= 0){
-                if (ejemplo.decision == conclusiones[i].decision){
-                    cout << "---!!!!CORRECTO ("<<idEjemplo<<" )(" << i << ")" << endl;;
+            if(nAtributosC <= 0) {
+                if (ejemplo.decision == conclusiones[i].decision) {
+                    cout << "\nCORRECTO" << endl;
+                    cout << "Se cumple conclusion (" << i+1 << ") en el ejemplo (" << idEjemplo << ")" << endl << endl;
                     break;
                 }
-                else{
-
-                    cout << "¿¿¿¿¿¿¿¿FALSO ("<<idEjemplo<<" )(" << i << ")------------------------------" << endl;;
+                else {
+                    cout << "\nFALSO" << endl;
+                    cout << "No se cumple ninguna conclusion en el ejemplo (" << idEjemplo << ")" << endl << endl;
                     correcto = false;
                 }
-                
             }
-            
         }
-        
     }
     return correcto;
-
 }
 
 // Función para imprimir los atributos y ejemplos en forma de tabla
@@ -248,37 +242,22 @@ int main() {
     // Imprimir la tabla
     imprimirTabla(atributos, ejemplos);
 
-
     string conclusion;
-
     vector<Ejemplo> v_conclusion;
     Ejemplo ejemploAux;
-
-    
 
     // Construcción del árbol de decisión
     ID3(ejemplos, atributos, 0, conclusion, v_conclusion, ejemploAux);
     cout << conclusion << endl;
 
-    for (auto& conclusion : v_conclusion)
-    {
-        for(auto& atributo : conclusion.atributos){
-            cout << atributo.second << ", ";
-        }
-        cout << conclusion.decision << endl;
-
-    }
-
-    cout << endl << endl;
+    cout << "Ahora comprobaremos si cada ejemplo cumple alguna de las conclusiones que hemos generado:" << endl;
     bool correcto = comprobarConclusion(ejemplos, v_conclusion);
     
-    cout << endl << endl;
-    if (correcto)
-    {
-        cout << "Corecto";
+    if (correcto) {
+        cout << "\nTodo corecto" << endl;
     }
-    else{
-        cout << "Falso";
+    else {
+        cout << "\nAlgun ejemplo no ha cumplido ninguna conclusion" << endl;
     }
     cout << endl;
     
