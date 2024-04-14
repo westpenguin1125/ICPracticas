@@ -197,7 +197,9 @@ bool comprobarConclusion(const vector<Ejemplo>& ejemplos, const vector<Ejemplo>&
                     cout << "Atributo ejemplo " << idEjemplo << ": " << ejemplo.atributos.find(atributo.first)->second << endl;
                 }
             }
-            if(nAtributosC <= 0) {
+            if (nAtributosC <= 0) {
+                cout << "\nDecision conclusion " << i+1 << ": " << conclusiones[i].decision << " | ";
+                cout << "Decision ejemplo " << idEjemplo << ": " << ejemplo.decision;
                 if (ejemplo.decision == conclusiones[i].decision) {
                     cout << "\nCORRECTO" << endl;
                     cout << "Se cumple conclusion (" << i+1 << ") en el ejemplo (" << idEjemplo << ")" << endl << endl;
