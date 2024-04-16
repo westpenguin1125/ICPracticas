@@ -7,11 +7,11 @@
 using namespace std;
 
 struct IrisData {
-    double sepal_length;
-    double sepal_width;
-    double petal_length;
-    double petal_width;
-    string class_label;
+    double x1;
+    double x2;
+    double x3;
+    double x4;
+    string nombre_clase;
 };
 
 vector<IrisData> readIrisData(const string& filename) {
@@ -29,11 +29,11 @@ vector<IrisData> readIrisData(const string& filename) {
         IrisData entry;
         char comma;
 
-        ss >> entry.sepal_length >> comma
-            >> entry.sepal_width >> comma
-            >> entry.petal_length >> comma
-            >> entry.petal_width >> comma
-            >> entry.class_label;
+        ss >> entry.x1 >> comma
+            >> entry.x2 >> comma
+            >> entry.x3 >> comma
+            >> entry.x4 >> comma
+            >> entry.nombre_clase;
 
         data.push_back(entry);
     }
@@ -42,17 +42,67 @@ vector<IrisData> readIrisData(const string& filename) {
     return data;
 }
 
+
+
+IrisData calcular_m(vector<IrisData> datosClase){
+    IrisData m = { 0, 0, 0, 0 };
+    for (auto dato : datosClase) {
+        m.x1 += dato.x1;
+        m.x2 += dato.x2;
+        m.x3 += dato.x3;
+        m.x4 += dato.x4;
+    }
+    m.x1 = m.x1 / 50;
+    m.x2 = m.x2 / 50;
+    m.x3 = m.x3 / 50;
+    m.x4 = m.x4 / 50;
+    
+
+    return m;
+}
+
+void bayes(vector<IrisData> irisData) {
+    vector<IrisData> clase1;
+    vector<IrisData> clase2;
+
+    for (auto c : irisData) {
+        if (c.nombre_clase == "Iris-setosa")
+        {
+            clase1.push_back(c);
+        }
+        else
+        {
+            clase2.push_back(c);
+        }
+    }
+    IrisData m1 = calcular_m(clase1);
+    IrisData m2 = calcular_m(clase2);
+
+
+    cout << m1.x1 << ", " << m1.x2 << ", " << m1.x3 << ", " << m1.x4 << ", " << endl;
+    cout << m2.x1 << ", " << m2.x2 << ", " << m2.x3 << ", " << m2.x4 << ", ";
+    cout << endl;
+
+
+}
+
 int main() {
     vector<IrisData> irisData = readIrisData("Iris2Clases.txt");
 
+    cout << "a" << endl;
+
     // Imprimir los datos leídos
     for (const auto& entry : irisData) {
-        cout << "Sepal Length: " << entry.sepal_length << ", "
-            << "Sepal Width: " << entry.sepal_width << ", "
-            << "Petal Length: " << entry.petal_length << ", "
-            << "Petal Width: " << entry.petal_width << ", "
-            << "Class: " << entry.class_label << endl;
+        cout << "x1: " << entry.x1 << ", "
+            << "x2: " << entry.x2 << ", "
+            << "x3: " << entry.x3 << ", "
+            << "x4: " << entry.x4 << ", "
+            << "Clase: " << entry.nombre_clase << endl;
     }
+
+    bayes(irisData);
+   
+    
 
     return 0;
 }
