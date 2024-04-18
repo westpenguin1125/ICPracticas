@@ -3,7 +3,10 @@
 #include <sstream>
 #include <vector>
 #include <string>
-
+#include <Eigen/Dense>
+ 
+using Eigen::MatrixXd;
+ 
 using namespace std;
 
 struct IrisData {
@@ -61,6 +64,25 @@ IrisData calcular_m(vector<IrisData> datosClase){
     return m;
 }
 
+void calcular_c(vector<IrisData> datosClase, IrisData m){
+    vector<IrisData> diferencia;
+    for (auto x : datosClase){
+    IrisData aux;
+        aux.x1 = x.x1 - m.x1;
+        aux.x2 = x.x2 - m.x2;
+        aux.x3 = x.x3 - m.x3;
+        aux.x4 = x.x4 - m.x4;
+        diferencia.push_back(aux);
+    }
+    vector<vector<double>> covarianza;
+    for (auto x : diferencia){
+        vector<double> aux;
+
+    }
+}
+
+
+
 void bayes(vector<IrisData> irisData) {
     vector<IrisData> clase1;
     vector<IrisData> clase2;
@@ -79,8 +101,8 @@ void bayes(vector<IrisData> irisData) {
     IrisData m2 = calcular_m(clase2);
 
 
-    cout << m1.x1 << ", " << m1.x2 << ", " << m1.x3 << ", " << m1.x4 << ", " << endl;
-    cout << m2.x1 << ", " << m2.x2 << ", " << m2.x3 << ", " << m2.x4 << ", ";
+    cout << "m1: " << m1.x1 << ", " << m1.x2 << ", " << m1.x3 << ", " << m1.x4 << ", " << endl;
+    cout << "m2: " << m2.x1 << ", " << m2.x2 << ", " << m2.x3 << ", " << m2.x4 << ", ";
     cout << endl;
 
 
@@ -101,8 +123,16 @@ int main() {
     }
 
     bayes(irisData);
-   
+
+    cout << endl << "-------------" << endl;
+    cout << "Comprobación de que Eigen funciona:" << endl;
     
+    MatrixXd m(2,2);
+  m(0,0) = 3;
+  m(1,0) = 2.5;
+  m(0,1) = -1;
+  m(1,1) = m(1,0) + m(0,1);
+  std::cout << m << std::endl;
 
     return 0;
 }

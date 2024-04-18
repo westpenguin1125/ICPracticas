@@ -256,7 +256,7 @@ int main() {
     bool correcto = comprobarConclusion(ejemplos, v_conclusion);
     
     if (correcto) {
-        cout << "\nTodo corecto" << endl;
+        cout << "\nTodo correcto" << endl;
     }
     else {
         cout << "\nAlgun ejemplo no ha cumplido ninguna conclusion" << endl;
