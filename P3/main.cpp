@@ -3,22 +3,19 @@
 #include <sstream>
 #include <vector>
 #include <string>
+
+//Librería de matrices
+//!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
 #include <Eigen/Dense>
  
-using Eigen::MatrixXd;
- 
+using Eigen::Matrix4d;
+using Eigen::Vector4d;
+
 using namespace std;
 
-struct IrisData {
-    double x1;
-    double x2;
-    double x3;
-    double x4;
-    string nombre_clase;
-};
 
-vector<IrisData> readIrisData(const string& filename) {
-    vector<IrisData> data;
+vector<Vector4d> readIrisData(const string& filename) {
+    vector<Vector4d> data;
     ifstream file(filename);
 
     if (!file.is_open()) {
@@ -29,14 +26,13 @@ vector<IrisData> readIrisData(const string& filename) {
     string line;
     while (getline(file, line)) {
         stringstream ss(line);
-        IrisData entry;
+        Vector4d entry;
         char comma;
 
-        ss >> entry.x1 >> comma
-            >> entry.x2 >> comma
-            >> entry.x3 >> comma
-            >> entry.x4 >> comma
-            >> entry.nombre_clase;
+        ss >> entry(0) >> comma
+            >> entry(1) >> comma
+            >> entry(2) >> comma
+            >> entry(3) >> comma;
 
         data.push_back(entry);
     }
@@ -47,92 +43,89 @@ vector<IrisData> readIrisData(const string& filename) {
 
 
 
-IrisData calcular_m(vector<IrisData> datosClase){
-    IrisData m = { 0, 0, 0, 0 };
+Vector4d calcular_m(vector<Vector4d> datosClase){
+    Vector4d m = { 0, 0, 0, 0 };
     for (auto dato : datosClase) {
-        m.x1 += dato.x1;
-        m.x2 += dato.x2;
-        m.x3 += dato.x3;
-        m.x4 += dato.x4;
+        m += dato;
     }
-    m.x1 = m.x1 / 50;
-    m.x2 = m.x2 / 50;
-    m.x3 = m.x3 / 50;
-    m.x4 = m.x4 / 50;
+    m = m / 50;
     
-
+    
     return m;
 }
 
-void calcular_c(vector<IrisData> datosClase, IrisData m){
-    vector<IrisData> diferencia;
+Matrix4d calcular_c(vector<Vector4d> datosClase, Vector4d m){
+    
+    vector<Vector4d> diferencias;
     for (auto x : datosClase){
-    IrisData aux;
-        aux.x1 = x.x1 - m.x1;
-        aux.x2 = x.x2 - m.x2;
-        aux.x3 = x.x3 - m.x3;
-        aux.x4 = x.x4 - m.x4;
-        diferencia.push_back(aux);
+    Vector4d dif;
+        dif = x - m;
+        diferencias.push_back(dif);
     }
-    vector<vector<double>> covarianza;
-    for (auto x : diferencia){
-        vector<double> aux;
 
+
+    Matrix4d covarianza {
+      {0, 0, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0},
+      {0, 0, 0, 0},};
+    for(auto d : diferencias){
+        covarianza = covarianza + ( d * d.transpose());
     }
+    covarianza = covarianza / 50;
+
+
+    return covarianza;
 }
 
 
 
-void bayes(vector<IrisData> irisData) {
-    vector<IrisData> clase1;
-    vector<IrisData> clase2;
+void bayes(vector<Vector4d> irisData) {
+    vector<Vector4d> clase1;
+    vector<Vector4d> clase2;
 
-    for (auto c : irisData) {
-        if (c.nombre_clase == "Iris-setosa")
-        {
-            clase1.push_back(c);
-        }
-        else
-        {
-            clase2.push_back(c);
-        }
+    for (int i = 0; i < 50; i++) {
+        clase1.push_back(irisData[i]);
     }
-    IrisData m1 = calcular_m(clase1);
-    IrisData m2 = calcular_m(clase2);
+
+    for (int i = 50; i < 100; i++) {
+        clase2.push_back(irisData[i]);
+    }
+    
+    Vector4d m1 = calcular_m(clase1);
+    Vector4d m2 = calcular_m(clase2);
 
 
-    cout << "m1: " << m1.x1 << ", " << m1.x2 << ", " << m1.x3 << ", " << m1.x4 << ", " << endl;
-    cout << "m2: " << m2.x1 << ", " << m2.x2 << ", " << m2.x3 << ", " << m2.x4 << ", ";
+    cout << endl << endl;
+    cout << "m1: " << endl << m1 << endl;
+    cout << "m2: " << endl << m2 << endl;
     cout << endl;
 
+    Matrix4d c1 = calcular_c(clase1, m1);
+    Matrix4d c2 = calcular_c(clase2, m2);
+    cout << "c1: " << endl << c1 << endl;
+    cout << "c2: " << endl << c2 << endl;
 
 }
 
 int main() {
-    vector<IrisData> irisData = readIrisData("Iris2Clases.txt");
-
-    cout << "a" << endl;
+    vector<Vector4d> irisData = readIrisData("Iris2Clases.txt");
 
     // Imprimir los datos leídos
-    for (const auto& entry : irisData) {
-        cout << "x1: " << entry.x1 << ", "
-            << "x2: " << entry.x2 << ", "
-            << "x3: " << entry.x3 << ", "
-            << "x4: " << entry.x4 << ", "
-            << "Clase: " << entry.nombre_clase << endl;
+    cout << "Datos Leidos:" << endl << "_____________" << endl;
+    for (int i = 0; i < irisData.size(); i++) {
+        cout << i << ": " << irisData[i].transpose() << endl;
+        if (i == 50) {cout << endl;}
     }
+    cout << "____________________" << endl;
 
     bayes(irisData);
 
-    cout << endl << "-------------" << endl;
-    cout << "Comprobación de que Eigen funciona:" << endl;
-    
-    MatrixXd m(2,2);
-  m(0,0) = 3;
-  m(1,0) = 2.5;
-  m(0,1) = -1;
-  m(1,1) = m(1,0) + m(0,1);
-  std::cout << m << std::endl;
+
+
+
+    //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
+    // Documentación: https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
 
     return 0;
 }

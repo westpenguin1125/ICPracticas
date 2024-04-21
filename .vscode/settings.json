@@ -59,6 +59,7 @@
   "files.associations": {
     "memory": "cpp",
     "utility": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "ostream": "cpp"
   }
 }
