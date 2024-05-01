@@ -19,9 +19,6 @@ double tolerancia = 0.0000000001;
 int maximasIteraciones = 10;
 double razonAprendizaje = 0.1; //(gamma)
 
-Vector4d v1 (4.6, 3.0, 4.0, 0.0);
-Vector4d v2 (6.8, 3.4, 4.6, 0.7);
-
 
 vector<Vector4d> readIrisData(const string& filename) {
     vector<Vector4d> data;
@@ -51,13 +48,12 @@ vector<Vector4d> readIrisData(const string& filename) {
 }
 
 //inicialización aleatoria de los centros
-vector<Vector4d> ini_c_rand(int numCentros){
+vector<Vector4d> ini_c_rand(int numCentros) {
     vector<Vector4d> centros;
     Vector4d centro;
 
     srand(time(nullptr));
-    for (int i = 0; i < numCentros; i++)
-    {
+    for (int i = 0; i < numCentros; i++) {
         
         centro(0) = double(rand() % 70) / 10;
         centro(1) = double(rand() % 70) / 10;
@@ -69,12 +65,13 @@ vector<Vector4d> ini_c_rand(int numCentros){
 }
 
 //inicialización definida de los centros (según el apéndice del enunciado)
-vector<Vector4d> ini_c_forced(){
+vector<Vector4d> ini_c_forced() {
     vector<Vector4d> centros;
 
     Vector4d c1(4.6, 3.0, 4.0, 0.0);
-    centros.push_back(c1);
     Vector4d c2(6.8, 3.4, 4.6, 0.7);
+
+    centros.push_back(c1);
     centros.push_back(c2);
 
     return centros;
@@ -90,12 +87,12 @@ double calcularD(Vector4d x, Vector4d c) {
 }
 
 //Calcula el centro más cercano a un vector x 
-int calcularC_mas_proximo(Vector4d x, vector<Vector4d> centros){
+int calcularC_mas_proximo(Vector4d x, vector<Vector4d> centros) {
     int i_cMasProximo = 0;
     double distancia_cMasProximo = 10000;
-    for(int i = 0; i < centros.size(); i++){
+    for(int i = 0; i < centros.size(); i++) {
         double distancia = calcularD(x, centros.at(i));
-        if (distancia < distancia_cMasProximo){
+        if (distancia < distancia_cMasProximo) {
             i_cMasProximo = i;
             distancia_cMasProximo = distancia;
         }
@@ -105,8 +102,8 @@ int calcularC_mas_proximo(Vector4d x, vector<Vector4d> centros){
 }
 
 //Actualiza el centro que se le pase para que se acerque al vector x
-void actualizarC(Vector4d& c, Vector4d x){
-    c = c + ( razonAprendizaje * (x-c));
+void actualizarC(Vector4d& c, Vector4d x) {
+    c = c + (razonAprendizaje * (x-c));
 }
 
 
@@ -114,21 +111,19 @@ void entrenar_lloyd(vector<Vector4d> irisData) {
 
     vector<Vector4d> centros = ini_c_forced();
 
-    cout <<"|c1= " << centros.at(0).transpose()  << " |c2= " << centros.at(1).transpose() << "\n\n"; 
+    cout <<"c1= " << centros.at(0).transpose()  << " | c2= " << centros.at(1).transpose() << "\n\n"; 
     int i_cMasProximo;
-    for (int j = 0; j < maximasIteraciones; j++)
-    {
-        for (int i = 0; i < irisData.size(); i++){
-        i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
-        cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
-        actualizarC(centros.at(i_cMasProximo), irisData.at(i));
-        cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
+    for (int j = 0; j < maximasIteraciones; j++) {
+        for (int i = 0; i < irisData.size(); i++ ){
+            i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
+            cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
+            actualizarC(centros.at(i_cMasProximo), irisData.at(i));
+            cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
         }
     }
     cout << "__________________________" << endl << endl;
     cout << "Centros finales:" << endl;
-    for (int i = 0; i < centros.size(); i++)
-    {
+    for (int i = 0; i < centros.size(); i++) {
         cout << "c" << i+1 << "= " << centros.at(i).transpose() << endl;
     }
     
@@ -137,6 +132,7 @@ void entrenar_lloyd(vector<Vector4d> irisData) {
 
 
 void clasificar_lloyd(vector<Vector4d> ejemplo1, vector<Vector4d> ejemplo2, vector<Vector4d> ejemplo3) {
+    
 }
 
 
