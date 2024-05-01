@@ -49,20 +49,37 @@ vector<Vector4d> readIrisData(const string& filename) {
     return data;
 }
 
+//inicialización aleatoria de los centros
 vector<Vector4d> ini_c_rand(int numCentros){
     vector<Vector4d> centros;
     Vector4d centro;
+
+    srand(time(nullptr));
     for (int i = 0; i < numCentros; i++)
     {
-        centro(0) = double(rand() % 100) / 10;
-        centro(1) = double(rand() % 100) / 10;
-        centro(2) = double(rand() % 100) / 10;
-        centro(3) = double(rand() % 100) / 10;
+        
+        centro(0) = double(rand() % 70) / 10;
+        centro(1) = double(rand() % 70) / 10;
+        centro(2) = double(rand() % 70) / 10;
+        centro(3) = double(rand() % 70) / 10;
         centros.push_back(centro);
     }
     return centros;
 }
 
+//inicialización definida de los centros (según el apéndice del enunciado)
+vector<Vector4d> ini_c_forced(){
+    vector<Vector4d> centros;
+
+    Vector4d c1(4.6, 3.0, 4.0, 0.0);
+    centros.push_back(c1);
+    Vector4d c2(6.8, 3.4, 4.6, 0.7);
+    centros.push_back(c2);
+
+    return centros;
+}
+
+//Calcula la distancia euclidiana entre dos vectores
 double calcularD(Vector4d x, Vector4d c) {
     return sqrt( pow(x(0) - c(0), 2) 
                 + pow(x(1) - c(1), 2) 
@@ -71,23 +88,55 @@ double calcularD(Vector4d x, Vector4d c) {
                 );
 }
 
+//Calcula el centro más cercano a un vector x 
 int calcularC_mas_proximo(Vector4d x, vector<Vector4d> centros){
-    vector<double> distancias;
-    for(auto c : centros){
-        distancias.push_back(calcularD(x, c));
+    int i_cMasProximo = 0;
+    double distancia_cMasProximo = 10000;
+    for(int i = 0; i < centros.size(); i++){
+        double distancia = calcularD(x, centros.at(i));
+        if (distancia < distancia_cMasProximo){
+            i_cMasProximo = i;
+            distancia_cMasProximo = distancia;
+        }
     }
-    sort(distancias.begin(), distancias.end());
-    for (auto d : distancias)
-    {
-        cout << d << ", " << endl;
-    }
-    return 0;
-}
-
-void lloyd(vector<Vector4d> ejemplo1, vector<Vector4d> ejemplo2, vector<Vector4d> ejemplo3) {
     
+    return i_cMasProximo;
 }
 
+//Actualiza el centro que se le pase para que se acerque al vector x
+void actualizarC(Vector4d& c, Vector4d x){
+    c = c + ( razonAprendizaje * (x-c));
+}
+
+
+void entrenar_lloyd(vector<Vector4d> irisData) {
+
+    vector<Vector4d> centros = ini_c_forced();
+
+    cout <<"|c1= " << centros.at(0).transpose()  << " |c2= " << centros.at(1).transpose() << "\n\n"; 
+    int i_cMasProximo;
+    for (int j = 0; j < maximasIteraciones; j++)
+    {
+        for (int i = 0; i < irisData.size(); i++){
+        i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
+        cout << "Más proximo = " << i_cMasProximo+1 << " |";
+        actualizarC(centros.at(i_cMasProximo), irisData.at(i));
+        cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
+        }
+    }
+    cout << "__________________________" << endl << endl;
+    cout << "centros finales:" << endl;
+    for (int i = 0; i < centros.size(); i++)
+    {
+        cout << "c" << i+1 << "= " << centros.at(i).transpose() << endl;
+    }
+    
+
+}
+
+
+void clasificar_lloyd(vector<Vector4d> ejemplo1, vector<Vector4d> ejemplo2, vector<Vector4d> ejemplo3) {
+}
 
 
 int main() {
@@ -105,14 +154,8 @@ int main() {
     vector<Vector4d> ejemplo2 = readIrisData("TestIris02.txt");
     vector<Vector4d> ejemplo3 = readIrisData("TestIris03.txt");
 
-
-    vector<Vector4d> centros = ini_c_rand(2);
-
-    cout << ejemplo1.at(0).transpose() << " | " << centros.at(0).transpose() << "\n\n"; 
-
-    cout << calcularD(ejemplo1.at(0), centros.at(0)) << endl;
-
-    calcularC_mas_proximo(ejemplo1.at(0), centros);
+    entrenar_lloyd(irisData);
+    clasificar_lloyd(ejemplo1, ejemplo2, ejemplo3);
 
     //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
     // Documentación: https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html

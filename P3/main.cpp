@@ -101,7 +101,7 @@ double calcular_distancia(Vector4d x, Vector4d m, Matrix4d c){
 
 
 
-m_y_c bayes_hacer_clasificacion(vector<Vector4d> irisData) {
+m_y_c entrenar_bayes(vector<Vector4d> irisData) {
     vector<Vector4d> clase1;
     vector<Vector4d> clase2;
 
@@ -155,7 +155,7 @@ int main() {
     vector<Vector4d> ejemplo3 = readIrisData("TestIris03.txt");
 
 
-    m_y_c myc = bayes_hacer_clasificacion(irisData);
+    m_y_c myc = entrenar_bayes(irisData);
     int ej1 = bayes_clasificar(myc, ejemplo1[0]);
     int ej2 = bayes_clasificar(myc, ejemplo2[0]);
     int ej3 = bayes_clasificar(myc, ejemplo3[0]);
