@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cstdlib> //-> para rand()
 
 //Librería de matrices
 //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
@@ -19,13 +20,6 @@ double razonAprendizaje = 0.1; //(gamma)
 
 Vector4d v1 (4.6, 3.0, 4.0, 0.0);
 Vector4d v2 (6.8, 3.4, 4.6, 0.7);
-
-struct m_y_c {
-    Vector4d m1;
-    Vector4d m2;
-    Matrix4d c1;
-    Matrix4d c2;
-};
 
 
 vector<Vector4d> readIrisData(const string& filename) {
@@ -55,8 +49,39 @@ vector<Vector4d> readIrisData(const string& filename) {
     return data;
 }
 
-void calcularD() {
+vector<Vector4d> ini_c_rand(int numCentros){
+    vector<Vector4d> centros;
+    Vector4d centro;
+    for (int i = 0; i < numCentros; i++)
+    {
+        centro(0) = double(rand() % 100) / 10;
+        centro(1) = double(rand() % 100) / 10;
+        centro(2) = double(rand() % 100) / 10;
+        centro(3) = double(rand() % 100) / 10;
+        centros.push_back(centro);
+    }
+    return centros;
+}
 
+double calcularD(Vector4d x, Vector4d c) {
+    return sqrt( pow(x(0) - c(0), 2) 
+                + pow(x(1) - c(1), 2) 
+                + pow(x(2) - c(2), 2) 
+                + pow(x(3) - c(3), 2)
+                );
+}
+
+int calcularC_mas_proximo(Vector4d x, vector<Vector4d> centros){
+    vector<double> distancias;
+    for(auto c : centros){
+        distancias.push_back(calcularD(x, c));
+    }
+    sort(distancias.begin(), distancias.end());
+    for (auto d : distancias)
+    {
+        cout << d << ", " << endl;
+    }
+    return 0;
 }
 
 void lloyd(vector<Vector4d> ejemplo1, vector<Vector4d> ejemplo2, vector<Vector4d> ejemplo3) {
@@ -80,6 +105,14 @@ int main() {
     vector<Vector4d> ejemplo2 = readIrisData("TestIris02.txt");
     vector<Vector4d> ejemplo3 = readIrisData("TestIris03.txt");
 
+
+    vector<Vector4d> centros = ini_c_rand(2);
+
+    cout << ejemplo1.at(0).transpose() << " | " << centros.at(0).transpose() << "\n\n"; 
+
+    cout << calcularD(ejemplo1.at(0), centros.at(0)) << endl;
+
+    calcularC_mas_proximo(ejemplo1.at(0), centros);
 
     //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
     // Documentación: https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
