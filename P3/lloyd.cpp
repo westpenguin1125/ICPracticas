@@ -3,7 +3,8 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include <cstdlib> //-> para rand()
+//#include <cstdlib> //-> para rand()
+#include <ctime>
 
 //Librería de matrices
 //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
@@ -119,13 +120,13 @@ void entrenar_lloyd(vector<Vector4d> irisData) {
     {
         for (int i = 0; i < irisData.size(); i++){
         i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
-        cout << "Más proximo = " << i_cMasProximo+1 << " |";
+        cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
         actualizarC(centros.at(i_cMasProximo), irisData.at(i));
         cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
         }
     }
     cout << "__________________________" << endl << endl;
-    cout << "centros finales:" << endl;
+    cout << "Centros finales:" << endl;
     for (int i = 0; i < centros.size(); i++)
     {
         cout << "c" << i+1 << "= " << centros.at(i).transpose() << endl;
