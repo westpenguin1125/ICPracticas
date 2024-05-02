@@ -19,13 +19,6 @@ double pesoExponencial = 2;
 Vector4d v1 (4.6, 3.0, 4.0, 0.0);
 Vector4d v2 (6.8, 3.4, 4.6, 0.7);
 
-struct m_y_c {
-    Vector4d m1;
-    Vector4d m2;
-    Matrix4d c1;
-    Matrix4d c2;
-};
-
 
 vector<Vector4d> readIrisData(const string& filename) {
     vector<Vector4d> data;
@@ -54,27 +47,68 @@ vector<Vector4d> readIrisData(const string& filename) {
     return data;
 }
 
-double calcularD(Vector4d X, Vector4d V) {
-    double x = pow((X(0)-X(1)-X(2)-X(3)), 2);
-    double v = pow((V(0)-V(1)-V(2)-V(3)), 2);
+ vector<double> ini_probs(int irisDataSize){
+    vector<double> probs;
+    double prob = 0.5;
+    for (int i = 0; i < irisDataSize; i++)
+    {
+        probs[i] = 0.5;
+    }
+    return probs;
+ }
 
-    return x + v;
+//Calcula la distancia euclidiana entre dos vectores
+double calcularD(Vector4d x, Vector4d c) {
+    return sqrt( pow(x(0) - c(0), 2) 
+                + pow(x(1) - c(1), 2) 
+                + pow(x(2) - c(2), 2) 
+                + pow(x(3) - c(3), 2)
+                );
 }
 
-double calcularP(vector<Vector4d> irisData, Vector4d X, Vector4d V) {
+//Calcula la probabilidad de que x pertenezca al grupo del centro v.
+double calcularP(Vector4d x, Vector4d v) {
     double exponente = 1/(pesoExponencial-1);
-    double numerador = pow(1/(calcularD(X, V)), exponente);
+    double numerador = pow(1/(calcularD(x, v)), exponente);
 
-    double denominador;
-    denominador += pow(1/(calcularD(X, v1)), exponente);
-    denominador += pow(1/(calcularD(X, v2)), exponente);
+    double denominador = 0;
+    denominador += pow(1/(calcularD(x, v1)), exponente);
+    denominador += pow(1/(calcularD(x, v2)), exponente);
 
     return numerador/denominador;
 }
 
-void calcularV(vector<Vector4d> irisData) {
-    double numerador;
-    double denominador;
+Vector4d calcularV(vector<Vector4d> irisData, vector<double> probs) {
+    Vector4d numerador(0, 0, 0, 0);
+    double denominador = 0;
+    
+    for (int i = 0; i < irisData.size(); i++) {
+        numerador += pow(probs.at(i), pesoExponencial) * irisData.at(i);
+        denominador += pow(probs.at(i), pesoExponencial);
+    }
+
+
+    return numerador/denominador;
+
+}
+
+void entrenar_kMedias(vector<Vector4d> irisData){
+    vector<double> probsv1 = ini_probs(irisData.size());
+    vector<double> probsv2 = ini_probs(irisData.size());
+    
+    Vector4d v1 = calcularV(irisData, probsv1);
+    
+    for (int i = 0; i < irisData.size(); i++)
+    {
+        double p = calcularP(irisData.at(i), v1);
+        probsv1.push_back(p);
+
+        p = calcularP(irisData.at(i), v2);
+        probsv2.push_back(p);   
+    }
+    cout << "|v1= " << v1.transpose() << endl;
+    
+
 
 }
 
@@ -93,6 +127,8 @@ int main() {
     vector<Vector4d> ejemplo1 = readIrisData("TestIris01.txt");
     vector<Vector4d> ejemplo2 = readIrisData("TestIris02.txt");
     vector<Vector4d> ejemplo3 = readIrisData("TestIris03.txt");
+
+    entrenar_kMedias(irisData);
 
 
     //!Para compilar hay que usar g++ -I eigen-3.4.0/ main.cpp -o main.exe
