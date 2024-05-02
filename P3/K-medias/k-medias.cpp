@@ -47,15 +47,14 @@ vector<Vector4d> readIrisData(const string& filename) {
     return data;
 }
 
- vector<double> ini_probs(int irisDataSize){
+vector<double> ini_probs(int irisDataSize) {
     vector<double> probs;
     double prob = 0.5;
-    for (int i = 0; i < irisDataSize; i++)
-    {
+    for (int i = 0; i < irisDataSize; i++) {
         probs.push_back(prob);
     }
     return probs;
- }
+}
 
 //Calcula la distancia euclidiana entre dos vectores
 double calcularD(Vector4d x, Vector4d c) {
@@ -87,9 +86,7 @@ Vector4d calcularV(vector<Vector4d> irisData, vector<double> probs) {
         denominador += pow(probs.at(i), pesoExponencial);
     }
 
-
     return numerador/denominador;
-
 }
 
 
@@ -102,9 +99,7 @@ void entrenar_kMedias(vector<Vector4d> irisData){
     Vector4d v1;
     Vector4d v2;
 
-    while (calcularD(v1_new, v1) > tolerancia 
-            && calcularD(v2_new, v2) > tolerancia) {
-   // for(int i = 0; i < 10; i++){
+    while (calcularD(v1_new, v1) > tolerancia && calcularD(v2_new, v2) > tolerancia) {
         
         v1 = v1_new;
         v2 = v2_new;
@@ -122,9 +117,6 @@ void entrenar_kMedias(vector<Vector4d> irisData){
         cout << "|v2= " << v2.transpose() << endl << endl;
 
     }
-        
-
-
 }
 
 
