@@ -64,7 +64,8 @@ vector<Vector4d> ini_c_rand(int numCentros) {
     return centros;
 }
 
-//inicialización definida de los centros (según el apéndice del enunciado)
+//inicialización definida de los centros 
+//(según el apéndice del enunciado)
 vector<Vector4d> ini_c_forced() {
     vector<Vector4d> centros;
 
@@ -110,11 +111,12 @@ void actualizarC(Vector4d& c, Vector4d x) {
 vector<Vector4d> entrenar_lloyd(vector<Vector4d> irisData) {
 
     vector<Vector4d> centros = ini_c_forced();
+    //vector<Vector4d> centros = ini_c_rand(2);
 
     cout <<"c1= " << centros.at(0).transpose()  << " | c2= " << centros.at(1).transpose() << "\n\n"; 
     int i_cMasProximo;
     for (int j = 0; j < maximasIteraciones; j++) {
-        for (int i = 0; i < irisData.size(); i++ ){
+        for (int i = 0; i < irisData.size(); i++ ) {
             i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
             cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
             actualizarC(centros.at(i_cMasProximo), irisData.at(i));
