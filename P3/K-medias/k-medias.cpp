@@ -16,9 +16,6 @@ using namespace std;
 double tolerancia = 0.01;
 double pesoExponencial = 2;
 
-const Vector4d V1 (4.6, 3.0, 4.0, 0.0);
-const Vector4d V2 (6.8, 3.4, 4.6, 0.7);
-
 
 vector<Vector4d> readIrisData(const string& filename) {
     vector<Vector4d> data;
@@ -94,8 +91,8 @@ void entrenar_kMedias(vector<Vector4d> irisData){
     vector<double> probsv1 = ini_probs(irisData.size());
     vector<double> probsv2 = ini_probs(irisData.size());
     
-    Vector4d v1_new = V1;
-    Vector4d v2_new = V2;
+    Vector4d v1_new (4.6, 3.0, 4.0, 0.0);
+    Vector4d v2_new (6.8, 3.4, 4.6, 0.7);
     Vector4d v1;
     Vector4d v2;
 
