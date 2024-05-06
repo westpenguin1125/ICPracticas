@@ -87,7 +87,7 @@ Vector4d calcularV(vector<Vector4d> irisData, vector<double> probs) {
 }
 
 
-void entrenar_kMedias(vector<Vector4d> irisData){
+pair<Vector4d, Vector4d> entrenar_kMedias(vector<Vector4d> irisData){
     vector<double> probsv1 = ini_probs(irisData.size());
     vector<double> probsv2 = ini_probs(irisData.size());
     
@@ -114,6 +114,21 @@ void entrenar_kMedias(vector<Vector4d> irisData){
         cout << "|v2= " << v2.transpose() << endl << endl;
 
     }
+
+    return {v1, v2};
+}
+
+
+int clasificar_kMedias(pair<Vector4d, Vector4d> vFinales, Vector4d ejemplo) {
+    double uno = calcularP(ejemplo, vFinales.first, vFinales.second);
+    double dos = calcularP(ejemplo, vFinales.second, vFinales.first);
+
+    if (uno > dos) {
+        return 1;
+    }
+    else {
+        return 2;
+    }
 }
 
 
@@ -132,8 +147,15 @@ int main() {
     vector<Vector4d> ejemplo2 = readIrisData("../lectura_archivos/TestIris02.txt");
     vector<Vector4d> ejemplo3 = readIrisData("../lectura_archivos/TestIris03.txt");
 
-    entrenar_kMedias(irisData);
+    pair<Vector4d, Vector4d> vFinales = entrenar_kMedias(irisData);
+    int ej1 = clasificar_kMedias(vFinales, ejemplo1[0]);
+    int ej2 = clasificar_kMedias(vFinales, ejemplo2[0]);
+    int ej3 = clasificar_kMedias(vFinales, ejemplo3[0]);
 
+    cout << endl;
+    cout << "Ej1 es de la clase: " << ej1 << endl;
+    cout << "Ej2 es de la clase: " << ej2 << endl;
+    cout << "Ej3 es de la clase: " << ej3 << endl;
 
     //!Para compilar hay que usar g++ -I ../eigen-3.4.0/ k-medias.cpp -o k-medias.exe
     // Documentación: https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
