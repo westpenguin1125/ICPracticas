@@ -115,15 +115,32 @@ vector<Vector4d> entrenar_lloyd(vector<Vector4d> irisData) {
 
     cout <<"c1= " << centros.at(0).transpose()  << " | c2= " << centros.at(1).transpose() << "\n\n"; 
     int i_cMasProximo;
-    for (int j = 0; j < maximasIteraciones; j++) {
+    int j = 0;
+
+    Vector4d c1_new = centros.at(0);
+    Vector4d c2_new = centros.at(1);
+    Vector4d c1;
+    Vector4d c2;
+    while ( j < maximasIteraciones && calcularD(c1_new, c1) > tolerancia 
+            && calcularD(c2_new, c2) > tolerancia) {
+
+        c1 = c1_new;
+        c2 = c2_new;
+            
         for (int i = 0; i < irisData.size(); i++ ) {
             i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
             cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
             actualizarC(centros.at(i_cMasProximo), irisData.at(i));
             cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
         }
+
+        c1_new = centros.at(0);
+        c2_new = centros.at(1);
+
+        j++;
     }
     cout << "__________________________" << endl << endl;
+    cout << "iteraciones finalmente hechas por el algoritmo de Lloyd que estamos formulando: " << j+1 << endl;
     cout << "Centros finales:" << endl;
     for (int i = 0; i < centros.size(); i++) {
         cout << "c" << i+1 << "= " << centros.at(i).transpose() << endl;
