@@ -51,7 +51,7 @@ vector<Vector4d> readIrisData(const string& filename) {
 
 
 
-Vector4d calcular_m(vector<Vector4d> datosClase){
+Vector4d calcular_m(vector<Vector4d> datosClase) {
     Vector4d m = { 0, 0, 0, 0 };
     for (auto dato : datosClase) {
         m += dato;
@@ -62,7 +62,7 @@ Vector4d calcular_m(vector<Vector4d> datosClase){
     return m;
 }
 
-Matrix4d calcular_c(vector<Vector4d> datosClase, Vector4d m){
+Matrix4d calcular_c(vector<Vector4d> datosClase, Vector4d m) {
     
     vector<Vector4d> diferencias;
     for (auto x : datosClase){
@@ -70,7 +70,6 @@ Matrix4d calcular_c(vector<Vector4d> datosClase, Vector4d m){
         dif = x - m;
         diferencias.push_back(dif);
     }
-
 
     Matrix4d covarianza {
       {0, 0, 0, 0},
@@ -86,7 +85,7 @@ Matrix4d calcular_c(vector<Vector4d> datosClase, Vector4d m){
     return covarianza;
 }
 
-double calcular_distancia(Vector4d x, Vector4d m, Matrix4d c){
+double calcular_distancia(Vector4d x, Vector4d m, Matrix4d c) {
     double distancia; 
 
     Vector4d dif;
@@ -130,7 +129,7 @@ m_y_c entrenar_bayes(vector<Vector4d> irisData) {
 
 }
 
-int bayes_clasificar(m_y_c myc, Vector4d ejemplo){
+int bayes_clasificar(m_y_c myc, Vector4d ejemplo) {
 
     if (calcular_distancia(ejemplo, myc.m1, myc.c1) > calcular_distancia(ejemplo, myc.m2, myc.c2))
         return 2;
