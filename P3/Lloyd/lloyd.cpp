@@ -140,7 +140,7 @@ vector<Vector4d> entrenar_lloyd(vector<Vector4d> irisData) {
         j++;
     }
     cout << "__________________________" << endl << endl;
-    cout << "iteraciones finalmente hechas por el algoritmo de Lloyd que estamos formulando: " << j+1 << endl;
+    cout << "Iteraciones: " << j+1 << endl;
     cout << "Centros finales:" << endl;
     for (int i = 0; i < centros.size(); i++) {
         cout << "c" << i+1 << "= " << centros.at(i).transpose() << endl;
