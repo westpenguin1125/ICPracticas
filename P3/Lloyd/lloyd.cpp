@@ -113,7 +113,8 @@ vector<Vector4d> entrenar_lloyd(vector<Vector4d> irisData) {
     vector<Vector4d> centros = ini_c_forced();
     //vector<Vector4d> centros = ini_c_rand(2);
 
-    cout <<"c1= " << centros.at(0).transpose()  << " | c2= " << centros.at(1).transpose() << "\n\n"; 
+    cout <<"c1= " << centros.at(0).transpose() << endl;
+    cout <<"c2= " << centros.at(1).transpose() << endl << endl; 
     int i_cMasProximo;
     int j = 0;
 
@@ -129,15 +130,17 @@ vector<Vector4d> entrenar_lloyd(vector<Vector4d> irisData) {
             
         for (int i = 0; i < irisData.size(); i++ ) {
             i_cMasProximo = calcularC_mas_proximo(irisData.at(i), centros);
-            cout << "Mas proximo = " << i_cMasProximo+1 << " | ";
             actualizarC(centros.at(i_cMasProximo), irisData.at(i));
-            cout << "new_c" << i_cMasProximo+1 <<"= " << centros.at(i_cMasProximo).transpose() << endl;
         }
 
         c1_new = centros.at(0);
         c2_new = centros.at(1);
 
         j++;
+
+        cout << "Iteracion " << j << endl;
+        cout << "Nuevo c1= " << c1_new.transpose() << endl;
+        cout << "Nuevo c2= " << c2_new.transpose() << endl << endl;
     }
     cout << "__________________________" << endl << endl;
     cout << "Iteraciones: " << j+1 << endl;
@@ -162,6 +165,8 @@ void clasificar_lloyd(vector<Vector4d> centros, Vector4d ejemplo1, Vector4d ejem
 
 int main() {
     vector<Vector4d> irisData = readIrisData("../lectura_archivos/Iris2Clases.txt");
+
+    string clase1, clase2;
 
     // Imprimir los datos leídos
     cout << "Datos Leidos:" << endl << "_____________" << endl;

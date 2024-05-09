@@ -79,7 +79,7 @@ Vector4d calcularV(vector<Vector4d> irisData, vector<double> probs) {
 }
 
 
-pair<Vector4d, Vector4d> entrenar_kMedias(vector<Vector4d> irisData){
+pair<Vector4d, Vector4d> entrenar_kMedias(vector<Vector4d> irisData) {
     vector<double> probsv1(irisData.size(), 0.0);
     vector<double> probsv2(irisData.size(), 0.0);
     
@@ -101,13 +101,12 @@ pair<Vector4d, Vector4d> entrenar_kMedias(vector<Vector4d> irisData){
             probsv2[j] = p;   
         }
         
-        cout << "Iteración " << i++ << endl;
+        cout << "Iteracion " << i++ << endl;
         v1_new = calcularV(irisData, probsv1);
         cout << "|v1= " << v1.transpose() << endl;
         v2_new = calcularV(irisData, probsv2);
         cout << "|v2= " << v2.transpose() << endl << endl;
     }
-
 
     return {v1, v2};
 }
@@ -130,12 +129,12 @@ int main() {
     vector<Vector4d> irisData = readIrisData("../lectura_archivos/Iris2Clases.txt");
 
     // Imprimir los datos leídos
-    // cout << "Datos Leidos:" << endl << "_____________" << endl;
-    // for (int i = 0; i < irisData.size(); i++) {
-    //     cout << i << ": " << irisData[i].transpose() << endl;
-    //     if (i == 49) {cout << endl;}
-    // }
-    // cout << "____________________" << endl;
+    cout << "Datos Leidos:" << endl << "_____________" << endl;
+    for (int i = 0; i < irisData.size(); i++) {
+        cout << i << ": " << irisData[i].transpose() << endl;
+        if (i == 49) {cout << endl;}
+    }
+    cout << "____________________" << endl;
 
     vector<Vector4d> ejemplo1 = readIrisData("../lectura_archivos/TestIris01.txt");
     vector<Vector4d> ejemplo2 = readIrisData("../lectura_archivos/TestIris02.txt");
